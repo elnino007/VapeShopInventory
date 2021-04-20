@@ -18,9 +18,6 @@ public class DatabaseConnection {
         try {
             Class.forName(DRIVER);
             conn = DriverManager.getConnection(URL + DATABASE, USER, PASSWORD);
-            
-//            Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
-//            conn = DriverManager.getConnection("jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)}; DBQ=bookkeeping.mdb");
 
         } catch (ClassNotFoundException | SQLException e) {
             JOptionPane.showMessageDialog(null, e);

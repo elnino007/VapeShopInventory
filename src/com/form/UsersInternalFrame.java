@@ -5,19 +5,16 @@
  */
 package com.form;
 
-import com.model.Users;
-import java.awt.Color;
-import java.awt.Toolkit;
+import com.dao.UserDAO;
+import com.utils.CustomDBUtils;
 import java.awt.event.KeyEvent;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
-
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -25,134 +22,89 @@ import javax.swing.table.DefaultTableModel;
  */
 public class UsersInternalFrame extends javax.swing.JInternalFrame {
     
+    final private UserDAO userDAO = new UserDAO();
+    private final ManagerFrame managerFrame;
+ 
     
-    private java.sql.Connection conn;
-    final private String DRIVER = "com.mysql.jdbc.Driver";
-    final private String USER = "root";
-    final private String PASSWORD = "";
-    final private String URL = "jdbc:mysql://localhost:3306/";
-    final private String DATABASE = "vapeshop";
-    public String query;
-    public PreparedStatement pst = null;
+    private ResultSet rs = null;
     private int id;
-    
 
+  
     /**
      * Creates new form UsersInternalFrame
      */
-    public UsersInternalFrame() {
+     
+    public UsersInternalFrame(ManagerFrame managerFrame) {
         initComponents();
-        showUsers();
-       
+        this.managerFrame = managerFrame;
+               
         this.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         BasicInternalFrameUI bui = (BasicInternalFrameUI) this.getUI();
         bui.setNorthPane(null);
        
-        tblUsers.getColumnModel().getColumn(0).setPreferredWidth(50);
-        tblUsers.getColumnModel().getColumn(1).setPreferredWidth(200);
-        tblUsers.getColumnModel().getColumn(2).setPreferredWidth(50);
+        
     }
     
+   
     
-    private void setId() {
+    public void updateTableUsers(){
+       rs = userDAO.readAllSortBy();
+       tblUsers.setModel(CustomDBUtils.resultSetToTableModel(rs));
+       tblUsers.getColumnModel().getColumn(0).setPreferredWidth(50);
+       tblUsers.getColumnModel().getColumn(1).setPreferredWidth(200);
+       tblUsers.getColumnModel().getColumn(2).setPreferredWidth(50);
+    }
+     
+    private static UsersInternalFrame myInstance;
+    public static UsersInternalFrame getInstance(ManagerFrame managerFrame){
+        if(myInstance == null){
+            myInstance = new UsersInternalFrame(managerFrame);
+        }
+        return myInstance;
+    }
+    
+    public void deleteUsers(int id){
+        
+        boolean success = userDAO.delete(id);
+        
+        if(success){
+            JOptionPane.showMessageDialog(null, "Successfully deleted.");
+            updateTableUsers();
+        }   
+    }
+    
+    public String getSelectedRowIntable(){
+          int row = tblUsers.getSelectedRow();
+          TableModel model = tblUsers.getModel();
+          
+          String id = model.getValueAt(row, 0).toString();
+       
+          return id;
+        
+    }
+         
+    private void clear(){
+       btnNew.setEnabled(true);
+       btnEdit.setEnabled(false);
+       btnDelete.setEnabled(false);
+       tblUsers.clearSelection();
+    }
+    
+    public void setId() {
         try {
             int row = tblUsers.getSelectedRow();
             
             if (row == -1){
-               
+               btnNew.setEnabled(true);
+               btnEdit.setEnabled(false);
+               btnDelete.setEnabled(false);
             }else{
+                 btnNew.setEnabled(false);
                  btnEdit.setEnabled(true);
                  btnDelete.setEnabled(true);
             }
-            id = Integer.parseInt(tblUsers.getValueAt(row, 0).toString());
-         
+        
         } catch (NumberFormatException e) {
-        }
-    }
-
-    public ArrayList<Users> userList(){
-        ArrayList<Users> userList = new ArrayList<>();
-        
-        try {
-         Class.forName(DRIVER);
-         conn = DriverManager.getConnection(URL + DATABASE, USER, PASSWORD);
-         query = "SELECT * FROM user_management";
-         Statement st = conn.createStatement();
-         ResultSet rs = st.executeQuery(query);
-         
-         Users users;
-         
-         while(rs.next()){
-             users = new Users(rs.getInt("id"), rs.getString("last_name") + ", " + rs.getString("first_name") + " " + rs.getString("middle_name") , rs.getInt("age"), rs.getString("username"), rs.getString("user_type"));
-             userList.add(users);
-             
-         }
-                 
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
-        }
-    
-        return userList;
-        
-        
-    }
-    
-     public ArrayList<Users> userList(String queryForSearch){
-        ArrayList<Users> userList = new ArrayList<>();
-        
-        try {
-         Class.forName(DRIVER);
-         conn = DriverManager.getConnection(URL + DATABASE, USER, PASSWORD);
-      
-         Statement st = conn.createStatement();
-         ResultSet rs = st.executeQuery(queryForSearch);
-         
-         Users users;
-         
-         while(rs.next()){
-             users = new Users(rs.getInt("id"), rs.getString("last_name") + ", " + rs.getString("first_name") + " " + rs.getString("middle_name") , rs.getInt("age"), rs.getString("username"), rs.getString("user_type"));
-             userList.add(users);
-             
-         }
-                 
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
-        }
-    
-        return userList;
-        
-        
-    }
-     
-     public void showUsers(String queryForSearch){
-        ArrayList<Users> list = userList(queryForSearch);
-        DefaultTableModel model = (DefaultTableModel) tblUsers.getModel();
-        model.setRowCount(0);
-        Object[] row = new Object[5];
-        
-        for (int i = 0; i < list.size(); i++) {
-            row[0] = list.get(i).getId();
-            row[1] = list.get(i).getName();
-            row[2] = list.get(i).getAge();
-            row[3] = list.get(i).getUsername();
-            row[4] = list.get(i).getUserType();
-            model.addRow(row);
-        }
-    }
-    
-    public void showUsers(){
-        ArrayList<Users> list = userList();
-        DefaultTableModel model = (DefaultTableModel) tblUsers.getModel();
-        model.setRowCount(0);
-        Object[] row = new Object[5];
-        
-        for (int i = 0; i < list.size(); i++) {
-            row[0] = list.get(i).getId();
-            row[1] = list.get(i).getName();
-            row[2] = list.get(i).getAge();
-            row[3] = list.get(i).getUsername();
-            row[4] = list.get(i).getUserType();
-            model.addRow(row);
         }
     }
     
@@ -171,6 +123,7 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
         btnNew = new javax.swing.JButton();
         btnEdit = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
+        btnDelete1 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         cmbSearch = new javax.swing.JComboBox<>();
         txtSearch = new javax.swing.JTextField();
@@ -179,8 +132,9 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
         jButton1 = new javax.swing.JButton();
 
         setBorder(null);
-        setClosable(true);
-        setPreferredSize(new java.awt.Dimension(790, 620));
+        setResizable(true);
+        setFocusable(false);
+        setPreferredSize(new java.awt.Dimension(800, 620));
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
                 formInternalFrameActivated(evt);
@@ -196,10 +150,12 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
             public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameOpened(evt);
             }
         });
 
         jPanel1.setBackground(new java.awt.Color(185, 221, 217));
+        jPanel1.setPreferredSize(new java.awt.Dimension(800, 620));
 
         jPanel3.setBackground(new java.awt.Color(153, 204, 255));
 
@@ -231,7 +187,7 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
         });
         jToolBar2.add(btnEdit);
 
-        btnDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/delete.png"))); // NOI18N
+        btnDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/delete_16x.png"))); // NOI18N
         btnDelete.setText("Delete");
         btnDelete.setEnabled(false);
         btnDelete.setFocusable(false);
@@ -244,11 +200,25 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
         });
         jToolBar2.add(btnDelete);
 
+        btnDelete1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/delete.png"))); // NOI18N
+        btnDelete1.setText("Clear");
+        btnDelete1.setFocusable(false);
+        btnDelete1.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnDelete1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnDelete1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDelete1ActionPerformed(evt);
+            }
+        });
+        jToolBar2.add(btnDelete1);
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, 944, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -268,11 +238,11 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "Name", "Age", "Username", "User Type"
+                "ID", "Name", "Age", "Gender", "Username", "User Type"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -296,6 +266,7 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
             tblUsers.getColumnModel().getColumn(2).setResizable(false);
             tblUsers.getColumnModel().getColumn(3).setResizable(false);
             tblUsers.getColumnModel().getColumn(4).setResizable(false);
+            tblUsers.getColumnModel().getColumn(5).setResizable(false);
         }
 
         jButton1.setText("Seact It baby");
@@ -311,47 +282,43 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 762, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(22, 22, 22)
                         .addComponent(jLabel1)
                         .addGap(18, 18, 18)
                         .addComponent(cmbSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 451, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 382, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1)))
-                .addContainerGap())
+                        .addComponent(jButton1)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cmbSearch)
-                            .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1))
-                        .addGap(1, 1, 1))
-                    .addComponent(jLabel1))
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(112, 112, 112))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(cmbSearch)
+                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 845, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE)
         );
 
         pack();
@@ -368,65 +335,79 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
         setId();
     }//GEN-LAST:event_tblUsersMouseReleased
 
-    private void btnNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewActionPerformed
-        // TODO add your handling code here:
-        AddEditUsersFrame addEditUsersFrame = new AddEditUsersFrame();
-        addEditUsersFrame.setVisible(true);
-        
-        
-       
-    }//GEN-LAST:event_btnNewActionPerformed
-
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        try {
-            Class.forName(DRIVER);
-            conn = DriverManager.getConnection(URL + DATABASE, USER, PASSWORD);
-            query = "DELETE FROM user_management WHERE id=?";
-            pst = conn.prepareStatement(query);
-            pst.setString(1, String.valueOf(id));
-         
-            
-            int k = pst.executeUpdate();
-            
-            if(k==1){
-                JOptionPane.showMessageDialog(this, "Users Delted");
-                
-                
-                showUsers();
-                
-              
-            }else{
-                JOptionPane.showMessageDialog(this, "Users Failed to Add");
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, e);
-        }
-    }//GEN-LAST:event_btnDeleteActionPerformed
-
     private void formInternalFrameActivated(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameActivated
         // TODO add your handling code here:
-        showUsers();
+        updateTableUsers();
     }//GEN-LAST:event_formInternalFrameActivated
-
-    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-        // TODO add your handling code here:
-           EDITFRAME editframe = new EDITFRAME();
-        editframe.setVisible(true);
-    }//GEN-LAST:event_btnEditActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        if(cmbSearch.getSelectedItem().toString() == "ID"){
-            showUsers("SELECT * FROM user_management WHERE id LIKE '%" + txtSearch.getText() +"%'");
-        }else if(cmbSearch.getSelectedItem().toString() == "Username"){
-             showUsers("SELECT * FROM user_management WHERE username LIKE '%" + txtSearch.getText() +"%'");
-        }
         
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        try {
+            
+            int input = JOptionPane.showConfirmDialog(null, 
+                    "Are you sure do you want to delete this user?", 
+                    "Warning", 
+                    JOptionPane.YES_NO_OPTION, 
+                    JOptionPane.WARNING_MESSAGE);
+            if(input == 0) {
+                   int id = Integer.parseInt(getSelectedRowIntable());
+             
+            deleteUsers(id);
+            }
+            
+         
+            
+        } catch(NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, ex);
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        // TODO add your handling code here:
+        try {
+            int id = Integer.parseInt(getSelectedRowIntable());
+             
+            AddEditUsersDialog addEditUsersDialog = new AddEditUsersDialog(managerFrame, this, true, id);
+            addEditUsersDialog.txtUserID.setText(getSelectedRowIntable());
+            addEditUsersDialog.setVisible(true);
+            
+        } catch(NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, ex);
+        }
+       
+        
+      
+    }//GEN-LAST:event_btnEditActionPerformed
+
+    private void btnNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewActionPerformed
+
+        
+        AddEditUsersDialog addEditUsersDialog = new AddEditUsersDialog(managerFrame, this, true, 0);
+        addEditUsersDialog.txtUserID.setText(String.valueOf(userDAO.autoNumber()));
+        addEditUsersDialog.setVisible(true);
+        
+        
+        
+
+    }//GEN-LAST:event_btnNewActionPerformed
+
+    private void btnDelete1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelete1ActionPerformed
+        // TODO add your handling code here:
+        clear();
+    }//GEN-LAST:event_btnDelete1ActionPerformed
+
+    private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
+        
+    }//GEN-LAST:event_formInternalFrameOpened
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnDelete1;
     private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnNew;
     private javax.swing.JComboBox<String> cmbSearch;

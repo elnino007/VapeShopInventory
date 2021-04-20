@@ -5,13 +5,16 @@
  */
 package com.form;
 
-import java.awt.Color;
+
 import java.awt.Toolkit;
-import java.beans.PropertyVetoException;
-import javax.swing.JDesktopPane;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.Timer;
 
 /**
  *
@@ -22,31 +25,96 @@ public class ManagerFrame extends javax.swing.JFrame {
     /**
      * Creates new form ManagerForm
      */
+    public boolean gender;
+    public int id;
+    public String welcomeBack;
+    public String userID;
+
+    
     public ManagerFrame() {
         initComponents();
         setIconImage();
+        showTime();
+        showDate();
+      
+      
+    }
+    
+    private void showInternalFrame(JInternalFrame internalFrame) {
+        removeDesktopComponents();
+        desktopPanel.add(internalFrame);
+        
+        try {
+            internalFrame.setMaximum(true);
+        } catch (Exception e) {
+       
+        }
+        internalFrame.setVisible(true);
+    }
+    
+     public void showHomeInternalFrame(){
+        HomeInternalFrame homeInternalFrame = HomeInternalFrame.getInstance(this);
+        showInternalFrame(homeInternalFrame);
+    }
+    
+    public void showUsersInternalFrame(){
+        UsersInternalFrame usersInternalFrame = UsersInternalFrame.getInstance(this);
+        showInternalFrame(usersInternalFrame);
+            
+    }
+    
+    public void closeManegerFrame(){
+        dispose();
+    }
+    
+    public void genderIcon(){
+        try {
+            if(gender == false){
+                jLabelAdmin.setIcon(new ImageIcon(getClass().getResource("/resources/admin_male_50x.png")));
+            }else{
+                jLabelAdmin.setIcon(new ImageIcon(getClass().getResource("/resources/admin_girl_50x.png")));
+            }
+        } catch (Exception e) {
+        }
+    }
+    
+    private void showDate(){
+        try {
+             Date d = new Date();
+                    SimpleDateFormat s = new SimpleDateFormat("MMMM-dd-yyyy");
+                    jLabelDate.setText(s.format(d));
+        } catch (Exception e) {
+        }
+    }
+    
+    private void showTime(){
+        try {
+            new Timer(0, new ActionListener() {
+                
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    Date d = new Date();
+                    SimpleDateFormat s = new SimpleDateFormat("hh:mm:ss a");
+                    jLabelTime.setText(s.format(d));
+                }
+            }).start();
+        } catch (Exception e) {
+        }
     }
     
      private void setIconImage() {
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resources/Icon-20.png")));
     }
     
-     public void removeDesktopComponents() {
-        int count = this.desktop.getComponentCount();
-        
-        for (int i = 0; i < count; i++) {
-            desktop.remove(desktop.getComponent(i));
-        }
-    }
+   public void removeDesktopComponents(){
+       int count = this.desktopPanel.getComponentCount();
+       
+       for (int i = 0; i < count; i++) {
+           desktopPanel.remove(desktopPanel.getComponent(i));
+       }
+   }
     
-    
-    public void setColor(JPanel p) {
-        p.setBackground(new Color(0,102,102));
-    }
-    
-    public void resetColor(JPanel pl) {
-        pl.setBackground(new Color(0,153,153));
-    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -57,233 +125,214 @@ public class ManagerFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        mainPanel = new javax.swing.JPanel();
-        topPanel = new javax.swing.JPanel();
-        productPanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        rewardProductPanel = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
-        usersPanel = new javax.swing.JPanel();
-        jLabel4 = new javax.swing.JLabel();
-        desktop = new javax.swing.JPanel();
+        jMenu3 = new javax.swing.JMenu();
+        jPanel1 = new javax.swing.JPanel();
+        btnUsers = new rojerusan.RSButtonIconI();
+        btnHome = new rojerusan.RSButtonIconI();
+        btnLogout = new rojerusan.RSButtonIconI();
+        jLabel2 = new javax.swing.JLabel();
+        desktopPanel = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        jLabelTime = new javax.swing.JLabel();
+        jLabelDate = new javax.swing.JLabel();
+        lbUserType = new javax.swing.JLabel();
+        jLabelAdmin = new javax.swing.JLabel();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu2 = new javax.swing.JMenu();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
+
+        jMenu3.setText("jMenu3");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(940, 620));
         setResizable(false);
-
-        mainPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        topPanel.setBackground(new java.awt.Color(0, 102, 102));
-
-        productPanel.setBackground(new java.awt.Color(0, 102, 102));
-
-        jLabel1.setFont(new java.awt.Font("Verdana", 1, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText(" Products");
-        jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel1MouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                jLabel1MouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                jLabel1MouseExited(evt);
-            }
-        });
-        jLabel1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                jLabel1KeyTyped(evt);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
             }
         });
 
-        javax.swing.GroupLayout productPanelLayout = new javax.swing.GroupLayout(productPanel);
-        productPanel.setLayout(productPanelLayout);
-        productPanelLayout.setHorizontalGroup(
-            productPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+        jPanel1.setBackground(new java.awt.Color(0, 102, 102));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        btnUsers.setBackground(new java.awt.Color(0, 102, 102));
+        btnUsers.setForeground(new java.awt.Color(51, 51, 51));
+        btnUsers.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/management.png"))); // NOI18N
+        btnUsers.setText("Users");
+        btnUsers.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUsersActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnUsers, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 460, 140, 40));
+
+        btnHome.setBackground(new java.awt.Color(0, 102, 102));
+        btnHome.setForeground(new java.awt.Color(51, 51, 51));
+        btnHome.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/house.png"))); // NOI18N
+        btnHome.setText("Home");
+        btnHome.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHomeActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnHome, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 140, 140, 40));
+
+        btnLogout.setBackground(new java.awt.Color(0, 102, 102));
+        btnLogout.setForeground(new java.awt.Color(51, 51, 51));
+        btnLogout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/logout.png"))); // NOI18N
+        btnLogout.setText("Logout");
+        btnLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLogoutActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnLogout, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 510, 140, 40));
+
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/VapeShop_120x120.jpg"))); // NOI18N
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 120, 120));
+
+        desktopPanel.setBackground(new java.awt.Color(185, 221, 217));
+        desktopPanel.setPreferredSize(new java.awt.Dimension(794, 607));
+
+        javax.swing.GroupLayout desktopPanelLayout = new javax.swing.GroupLayout(desktopPanel);
+        desktopPanel.setLayout(desktopPanelLayout);
+        desktopPanelLayout.setHorizontalGroup(
+            desktopPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
-        productPanelLayout.setVerticalGroup(
-            productPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, productPanelLayout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+        desktopPanelLayout.setVerticalGroup(
+            desktopPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        rewardProductPanel.setBackground(new java.awt.Color(0, 102, 102));
-        rewardProductPanel.setForeground(new java.awt.Color(255, 255, 255));
-        rewardProductPanel.setFont(new java.awt.Font("Verdana", 1, 18)); // NOI18N
+        jPanel2.setBackground(new java.awt.Color(51, 153, 0));
 
-        jLabel3.setFont(new java.awt.Font("Verdana", 1, 18)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("Rewards");
-        jLabel3.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel3MouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                jLabel3MouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                jLabel3MouseExited(evt);
-            }
-        });
+        jLabelTime.setFont(new java.awt.Font("Verdana", 1, 24)); // NOI18N
+        jLabelTime.setForeground(new java.awt.Color(0, 0, 51));
+        jLabelTime.setText("Time");
 
-        javax.swing.GroupLayout rewardProductPanelLayout = new javax.swing.GroupLayout(rewardProductPanel);
-        rewardProductPanel.setLayout(rewardProductPanelLayout);
-        rewardProductPanelLayout.setHorizontalGroup(
-            rewardProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(rewardProductPanelLayout.createSequentialGroup()
+        jLabelDate.setFont(new java.awt.Font("Verdana", 1, 24)); // NOI18N
+        jLabelDate.setForeground(new java.awt.Color(0, 0, 51));
+        jLabelDate.setText("Date");
+
+        lbUserType.setFont(new java.awt.Font("Verdana", 1, 24)); // NOI18N
+        lbUserType.setForeground(new java.awt.Color(0, 0, 51));
+        lbUserType.setText("Admin");
+
+        jLabelAdmin.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/admin_male_50x.png"))); // NOI18N
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel3)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        rewardProductPanelLayout.setVerticalGroup(
-            rewardProductPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-
-        usersPanel.setBackground(new java.awt.Color(0, 102, 102));
-
-        jLabel4.setFont(new java.awt.Font("Verdana", 1, 18)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setText("Users");
-        jLabel4.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel4MouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                jLabel4MouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                jLabel4MouseExited(evt);
-            }
-        });
-
-        javax.swing.GroupLayout usersPanelLayout = new javax.swing.GroupLayout(usersPanel);
-        usersPanel.setLayout(usersPanelLayout);
-        usersPanelLayout.setHorizontalGroup(
-            usersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, usersPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabelDate, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabelTime, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 153, Short.MAX_VALUE)
+                .addComponent(lbUserType)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabelAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
-        usersPanelLayout.setVerticalGroup(
-            usersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbUserType, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabelTime, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabelDate, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jLabelAdmin, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
-        javax.swing.GroupLayout topPanelLayout = new javax.swing.GroupLayout(topPanel);
-        topPanel.setLayout(topPanelLayout);
-        topPanelLayout.setHorizontalGroup(
-            topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(topPanelLayout.createSequentialGroup()
-                .addGap(169, 169, 169)
-                .addComponent(productPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(rewardProductPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(usersPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(322, Short.MAX_VALUE))
-        );
-        topPanelLayout.setVerticalGroup(
-            topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(topPanelLayout.createSequentialGroup()
-                .addGroup(topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(usersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(productPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(rewardProductPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
+        jMenuBar1.setBackground(new java.awt.Color(153, 204, 255));
 
-        mainPanel.add(topPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 790, 50));
+        jMenu2.setText("File");
 
-        desktop.setBackground(new java.awt.Color(185, 221, 217));
+        jMenuItem3.setText("Change Password");
+        jMenu2.add(jMenuItem3);
 
-        javax.swing.GroupLayout desktopLayout = new javax.swing.GroupLayout(desktop);
-        desktop.setLayout(desktopLayout);
-        desktopLayout.setHorizontalGroup(
-            desktopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 790, Short.MAX_VALUE)
-        );
-        desktopLayout.setVerticalGroup(
-            desktopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 620, Short.MAX_VALUE)
-        );
+        jMenuItem1.setText("Logout");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem1);
 
-        mainPanel.add(desktop, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 50, 790, 620));
+        jMenuItem2.setText("Exit");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem2);
+
+        jMenuBar1.add(jMenu2);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 786, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(desktopPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 622, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(desktopPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 569, Short.MAX_VALUE))
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
+    private void btnUsersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsersActionPerformed
         // TODO add your handling code here:
-        removeDesktopComponents();
-        ProductInternalFrame productInternalFrame = new ProductInternalFrame();
-        desktop.add(productInternalFrame).setVisible(true);
-       
-    }//GEN-LAST:event_jLabel1MouseClicked
+        showUsersInternalFrame();
+    }//GEN-LAST:event_btnUsersActionPerformed
 
-    private void jLabel1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jLabel1KeyTyped
-        // TODO add your handling code here:   
-    }//GEN-LAST:event_jLabel1KeyTyped
-
-    private void jLabel1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseEntered
+    private void btnHomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHomeActionPerformed
         // TODO add your handling code here:
-         resetColor(productPanel);
-    }//GEN-LAST:event_jLabel1MouseEntered
+        showHomeInternalFrame();
+    
+    }//GEN-LAST:event_btnHomeActionPerformed
 
-    private void jLabel1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseExited
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         // TODO add your handling code here:
-       
-            setColor(productPanel);
-    }//GEN-LAST:event_jLabel1MouseExited
+        dispose();
+        LoginFrame loginFrame = new LoginFrame();
+        loginFrame.setVisible(true);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
-    private void jLabel3MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseEntered
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         // TODO add your handling code here:
-         resetColor(rewardProductPanel);
-    }//GEN-LAST:event_jLabel3MouseEntered
+         System.exit(0);
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
 
-    private void jLabel3MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseExited
+    private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
         // TODO add your handling code here:
-        setColor(rewardProductPanel);
-    }//GEN-LAST:event_jLabel3MouseExited
+        dispose();
+        LoginFrame loginFrame = new LoginFrame();
+        loginFrame.setVisible(true);
+    }//GEN-LAST:event_btnLogoutActionPerformed
 
-    private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
         // TODO add your handling code here:
-         removeDesktopComponents();
-         RewardsInternalFrame rewardsInternalFrame = new RewardsInternalFrame();
-         desktop.add(rewardsInternalFrame).setVisible(true);
-    }//GEN-LAST:event_jLabel3MouseClicked
-
-    private void jLabel4MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel4MouseEntered
-        // TODO add your handling code here:
-         resetColor(usersPanel);
-    }//GEN-LAST:event_jLabel4MouseEntered
-
-    private void jLabel4MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel4MouseExited
-        // TODO add your handling code here:
-         setColor(usersPanel);
-    }//GEN-LAST:event_jLabel4MouseExited
-
-    private void jLabel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel4MouseClicked
-        // TODO add your handling code here:
-        removeDesktopComponents();
-        UsersInternalFrame usersInternalFrame = new UsersInternalFrame();
-        desktop.add(usersInternalFrame).setVisible(true);
-    }//GEN-LAST:event_jLabel4MouseClicked
+    }//GEN-LAST:event_formWindowActivated
 
     /**
      * @param args the command line arguments
@@ -322,14 +371,22 @@ public class ManagerFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel desktop;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JPanel mainPanel;
-    private javax.swing.JPanel productPanel;
-    private javax.swing.JPanel rewardProductPanel;
-    private javax.swing.JPanel topPanel;
-    private javax.swing.JPanel usersPanel;
+    private rojerusan.RSButtonIconI btnHome;
+    private rojerusan.RSButtonIconI btnLogout;
+    private rojerusan.RSButtonIconI btnUsers;
+    private javax.swing.JPanel desktopPanel;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabelAdmin;
+    public javax.swing.JLabel jLabelDate;
+    private javax.swing.JLabel jLabelTime;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    public javax.swing.JLabel lbUserType;
     // End of variables declaration//GEN-END:variables
 }

@@ -111,6 +111,7 @@ public class LoginFrame extends javax.swing.JFrame {
         setBackground(new java.awt.Color(185, 221, 217));
         setIconImages(null);
         setLocation(new java.awt.Point(0, 0));
+        setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(185, 221, 217));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -123,7 +124,7 @@ public class LoginFrame extends javax.swing.JFrame {
         });
         jPanel1.add(hideIcon, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 320, -1, -1));
 
-        xMarkPassword.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
+        xMarkPassword.setFont(new java.awt.Font("Verdana", 1, 36)); // NOI18N
         xMarkPassword.setForeground(new java.awt.Color(102, 102, 102));
         xMarkPassword.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/x_icon.png"))); // NOI18N
         xMarkPassword.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -131,7 +132,7 @@ public class LoginFrame extends javax.swing.JFrame {
                 xMarkPasswordMouseClicked(evt);
             }
         });
-        jPanel1.add(xMarkPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 320, 30, 20));
+        jPanel1.add(xMarkPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 320, 20, 20));
 
         xMarkUsername.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
         xMarkUsername.setForeground(new java.awt.Color(102, 102, 102));
@@ -145,12 +146,12 @@ public class LoginFrame extends javax.swing.JFrame {
 
         lbUsernameError.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
         lbUsernameError.setForeground(new java.awt.Color(204, 0, 0));
-        lbUsernameError.setText("* Username does not exist");
+        lbUsernameError.setText("* Username does not exist.");
         jPanel1.add(lbUsernameError, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 280, 260, -1));
 
         lbPasswordError.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
         lbPasswordError.setForeground(new java.awt.Color(204, 0, 0));
-        lbPasswordError.setText("* Wrong password. Please retry.");
+        lbPasswordError.setText("* Wrong password, please retry.");
         jPanel1.add(lbPasswordError, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 350, 260, -1));
 
         lbUsername.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
@@ -350,15 +351,15 @@ public class LoginFrame extends javax.swing.JFrame {
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         // TODO add your handling code here:
-        try {
-            if (PASSWORD_PATTERN.matcher(txtPassword.getText()).matches()) {
-           JOptionPane.showMessageDialog(this, "The password is valid");
-        }
-        else {
-             JOptionPane.showMessageDialog(this, "The password is invalid");
-        }
-        } catch (Exception e) {
-        }
+//        try {
+//            if (PASSWORD_PATTERN.matcher(txtPassword.getText()).matches()) {
+//           JOptionPane.showMessageDialog(this, "The password is valid");
+//        }
+//        else {
+//             JOptionPane.showMessageDialog(this, "The password is invalid");
+//        }
+//        } catch (Exception e) {
+//        }
         
         try {
             Class.forName(DRIVER);
@@ -369,30 +370,33 @@ public class LoginFrame extends javax.swing.JFrame {
             ResultSet rs = pst.executeQuery();
             if(rs.next()){
                 lbUsernameError.setVisible(false);
-           
-            } else {
-               lbUsernameError.setVisible(true);
-            }
-            conn.close();
-            
-        } catch (Exception e) {
-        }
-        
-        try {
+                
+                try {
             Class.forName(DRIVER);
             conn = DriverManager.getConnection(URL + DATABASE, USER, PASSWORD);
             query = "SELECT * FROM user_management WHERE username=? and password = ?";
-            PreparedStatement pst = conn.prepareStatement(query);
+            pst = conn.prepareStatement(query);
             pst.setString(1, txtUsername.getText());
             pst.setString(2, txtPassword.getText());
-            ResultSet rs = pst.executeQuery();
+            rs = pst.executeQuery();
             if(rs.next()){
                 lbPasswordError.setVisible(false);
+                String userType = rs.getString("user_type");
+                
                 if(rs.getString("user_type").equals("cashier")) {
                     new CashierFrame().setVisible(true);
                 this.setVisible(false);
-                }else  if(rs.getString("user_type").equals("manager")){
-                    new ManagerFrame().setVisible(true);
+                }
+      
+                else  if(userType.equals("Admin") || userType.equals("Manager")){
+                    ManagerFrame managerFrame = new ManagerFrame();
+                    managerFrame.gender = rs.getBoolean("gender");
+                    managerFrame.welcomeBack = "Welcome Back, " + rs.getString("last_name") + "!";
+                    managerFrame.lbUserType.setText(rs.getString("user_type"));
+           
+                    managerFrame.genderIcon();
+                    
+                    managerFrame.setVisible(true);
                 this.setVisible(false);
                 }
             } else {
@@ -402,6 +406,44 @@ public class LoginFrame extends javax.swing.JFrame {
              
         } catch (Exception e) {
         }
+           
+            } else {
+               lbUsernameError.setVisible(true);
+            }
+            conn.close();
+            
+        } catch (Exception e) {
+        }
+        
+//        try {
+//            Class.forName(DRIVER);
+//            conn = DriverManager.getConnection(URL + DATABASE, USER, PASSWORD);
+//            query = "SELECT * FROM user_management WHERE username=? and password = ?";
+//            PreparedStatement pst = conn.prepareStatement(query);
+//            pst.setString(1, txtUsername.getText());
+//            pst.setString(2, txtPassword.getText());
+//            ResultSet rs = pst.executeQuery();
+//            if(rs.next()){
+//                lbPasswordError.setVisible(false);
+//                if(rs.getString("user_type").equals("cashier")) {
+//                    new CashierFrame().setVisible(true);
+//                this.setVisible(false);
+//                }else  if(rs.getString("user_type").equals("Admin")){
+//                 
+//                    ManagerFrame managerFrame = new ManagerFrame();
+//                    managerFrame.gender = rs.getBoolean("gender");
+//                    managerFrame.genderIcon();
+//                    
+//                    managerFrame.setVisible(true);
+//                this.setVisible(false);
+//                }
+//            } else {
+//               lbPasswordError.setVisible(true);
+//            }
+//            conn.close();
+//             
+//        } catch (Exception e) {
+//        }
         
     }//GEN-LAST:event_btnLoginActionPerformed
 

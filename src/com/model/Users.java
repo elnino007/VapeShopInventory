@@ -10,6 +10,7 @@ package com.model;
  * @author shaitozen
  */
 public class Users {
+    
     private int id;
     private String name; 
     private String firstName;
@@ -19,16 +20,7 @@ public class Users {
     private String username;
     private String password;
     private String userType;
-    
-    public Users(int id, String name, int age, String username, String userType){
-        this.id = id;
-        this.name = name;
-        this.age = age;
-        this.username = username;
-        this.userType = userType;
-    }
-
-    
+    private boolean gender;
     
     public int getId() {
         return id;
@@ -100,6 +92,14 @@ public class Users {
 
     public void setUserType(String userType) {
         this.userType = userType;
+    }
+
+    public boolean isGender() {
+        return gender;
+    }
+
+    public void setGender(boolean gender) {
+        this.gender = gender;
     }
     
     
