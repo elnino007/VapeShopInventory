@@ -21,11 +21,10 @@ public class CustomDBUtils {
 //            for (int column = 0; column < numberOfColumns; column++) {
 //                columnNames.addElement(metaData.getColumnLabel(column + 1));
 //            }
-            columnNames.addElement("ID");
+            columnNames.addElement("Username");
             columnNames.addElement("Full Name");
             columnNames.addElement("Age");
             columnNames.addElement("Gender");
-            columnNames.addElement("Username");
             columnNames.addElement("User Type");
 
             // Get all rows.

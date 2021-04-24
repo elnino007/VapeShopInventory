@@ -383,7 +383,7 @@ public class LoginFrame extends javax.swing.JFrame {
                 lbPasswordError.setVisible(false);
                 String userType = rs.getString("user_type");
                 
-                if(rs.getString("user_type").equals("cashier")) {
+                if(rs.getString("user_type").equals("Cashier")) {
                     new CashierFrame().setVisible(true);
                 this.setVisible(false);
                 }
@@ -391,8 +391,9 @@ public class LoginFrame extends javax.swing.JFrame {
                 else  if(userType.equals("Admin") || userType.equals("Manager")){
                     ManagerFrame managerFrame = new ManagerFrame();
                     managerFrame.gender = rs.getBoolean("gender");
-                    managerFrame.welcomeBack = "Welcome Back, " + rs.getString("last_name") + "!";
                     managerFrame.lbUserType.setText(rs.getString("user_type"));
+                    managerFrame.lbLastname.setText("Name: " + rs.getString("last_name"));
+                    managerFrame.username = rs.getString("username");
            
                     managerFrame.genderIcon();
                     

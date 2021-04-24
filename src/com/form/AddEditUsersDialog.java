@@ -30,8 +30,7 @@ import javax.swing.JTextField;
  */
 public class AddEditUsersDialog extends javax.swing.JDialog {
     
-    private java.sql.Connection conn;
-    private PreparedStatement pst = null;
+   
     private UsersInternalFrame usersInternalFrame;
     private ManagerFrame managerFrame;
     final private UserDAO userDAO = new UserDAO();
@@ -67,7 +66,7 @@ public class AddEditUsersDialog extends javax.swing.JDialog {
         }else{
             lbAddEditTittle.setText("Edit Users");
             btnSave.setText("Update");
-            getUsersInfo(userDAO.getUsersInfo(id));
+           // getUsersInfo(userDAO.getUsersInfo(id));
         }
         
         this.id = id;
@@ -111,17 +110,17 @@ public class AddEditUsersDialog extends javax.swing.JDialog {
         return isUsernameExisted;
     }
     
-    public Boolean isUsernameExisted(int id){
-        boolean isUsernameExisted = false;
-        
-        if(userDAO.checkUsernameExist(id,txtUsername.getText()) == true){
-            isUsernameExisted = false;
-        }else{
-            isUsernameExisted = true;
-        }
-        
-        return isUsernameExisted;
-    }
+//    public Boolean isUsernameExisted(int id){
+//        boolean isUsernameExisted = false;
+//        
+//        if(userDAO.checkUsernameExist(id,txtUsername.getText()) == true){
+//            isUsernameExisted = false;
+//        }else{
+//            isUsernameExisted = true;
+//        }
+//        
+//        return isUsernameExisted;
+//    }
     
     public Boolean validation(){
         boolean valid = false;
@@ -223,7 +222,7 @@ public class AddEditUsersDialog extends javax.swing.JDialog {
         if(success){
             JOptionPane.showMessageDialog(null, "Successfully updated.");
             usersInternalFrame.updateTableUsers();
-            usersInternalFrame.setId();
+            usersInternalFrame.setButton();
         }
 
         dispose();
@@ -270,7 +269,6 @@ public class AddEditUsersDialog extends javax.swing.JDialog {
         rbFemale = new javax.swing.JRadioButton();
         jButton2 = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -542,21 +540,21 @@ public class AddEditUsersDialog extends javax.swing.JDialog {
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
 
-        if(validation()){
-            if(id == 0){
-                if(isUsernameExisted() == true){
-                 newUsers();
-                } else {
-                    showMessageError("The username is already existed!");
-                }
-            } else {
-                if(isUsernameExisted(id) == true){
-                      editUsers();
-                } else {
-                     showMessageError("The username is already existed!");
-                }
-            }
-        }   
+//        if(validation()){
+//            if(id == 0){
+//                if(isUsernameExisted() == true){
+//                 newUsers();
+//                } else {
+//                    showMessageError("The username is already existed!");
+//                }
+//            } else {
+//                if(isUsernameExisted(id) == true){
+//                      editUsers();
+//                } else {
+//                     showMessageError("The username is already existed!");
+//                }
+//            }
+//        }   
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -576,19 +574,19 @@ public class AddEditUsersDialog extends javax.swing.JDialog {
 
     private void txtUsernameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUsernameKeyReleased
         // TODO add your handling code here:
-        if(id == 0){
-            if(userDAO.checkUsernameExist(txtUsername.getText()) == true){
-            txtUsername.setForeground(new Color(204,0,0));
-        }else{
-            txtUsername.setForeground(new Color(0,0,153));
-        }
-        } else {
-            if(userDAO.checkUsernameExist(id, txtUsername.getText()) == true){
-            txtUsername.setForeground(new Color(204,0,0));
-        }else{
-            txtUsername.setForeground(new Color(0,0,153));
-        }
-        }
+//        if(id == 0){
+//            if(userDAO.checkUsernameExist(txtUsername.getText()) == true){
+//            txtUsername.setForeground(new Color(204,0,0));
+//        }else{
+//            txtUsername.setForeground(new Color(0,0,153));
+//        }
+//        } else {
+//            if(userDAO.checkUsernameExist(id, txtUsername.getText()) == true){
+//            txtUsername.setForeground(new Color(204,0,0));
+//        }else{
+//            txtUsername.setForeground(new Color(0,0,153));
+//        }
+//        }
         
         
     }//GEN-LAST:event_txtUsernameKeyReleased

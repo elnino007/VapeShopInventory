@@ -51,16 +51,16 @@ public class UserDAO {
         return success;
     }
     
-    public boolean checkUsernameExist(int id, String username){
+    public boolean checkUsernameExist(String username,String usernameNow){
         conn = new DatabaseConnection().getConnection();
         
-        sql = "SELECT * FROM user_management WHERE username=? AND id<>?";   
+        sql = "SELECT * FROM user_management WHERE username=? AND username<>?";   
         boolean success = false;
         
         try {
             pst = conn.prepareStatement(sql);
             pst.setString(1, username);
-            pst.setInt(2, id);
+            pst.setString(2, usernameNow);
             
             rs = pst.executeQuery();
             
@@ -78,25 +78,27 @@ public class UserDAO {
         return success;
     }
     
-    public List<Object> getUsersInfo(int id){
+    public List<Object> getUsersInfo(String username){
         List<Object> getUsersInfo =  new ArrayList<>();
         
          conn = new DatabaseConnection().getConnection();
-         sql = "SELECT * FROM user_management WHERE id=?";
+         sql = "SELECT * FROM user_management WHERE username=?";
          
          try {
              pst = conn.prepareStatement(sql);
-             pst.setInt(1, id);      
+             pst.setString(1, username);      
              rs = pst.executeQuery();
             
             while(rs.next()){
+                getUsersInfo.add(rs.getString("password"));
+                getUsersInfo.add(rs.getString("user_type"));
                 getUsersInfo.add(rs.getString("first_name"));
                 getUsersInfo.add(rs.getString("middle_name"));
                 getUsersInfo.add(rs.getString("last_name"));
+                getUsersInfo.add(rs.getString("birthday"));
                 getUsersInfo.add(rs.getInt("age"));
-                getUsersInfo.add(rs.getString("username"));
-                getUsersInfo.add(rs.getString("password"));
-                getUsersInfo.add(rs.getString("user_type"));
+                getUsersInfo.add(rs.getString("address"));
+                getUsersInfo.add(rs.getString("contact"));
                 getUsersInfo.add(rs.getBoolean("gender"));                        
             }    
         } catch (Exception e) {
@@ -126,7 +128,7 @@ public class UserDAO {
     public boolean create(List<Object> columnValues){
         conn = new DatabaseConnection().getConnection();
         
-        sql = "INSERT INTO user_management VALUES(?,?,?,?,?,?,?,?,?)";   
+        sql = "INSERT INTO user_management VALUES(?,?,?,?,?,?,?,?,?,?,?)";   
         boolean success = false;
         
         try {
@@ -139,7 +141,9 @@ public class UserDAO {
             pst.setString(6, columnValues.get(5).toString());
             pst.setString(7, columnValues.get(6).toString());
             pst.setString(8, columnValues.get(7).toString());
-            pst.setBoolean(9, Boolean.parseBoolean(columnValues.get(8).toString()));
+            pst.setString(9, columnValues.get(8).toString());
+            pst.setString(10, columnValues.get(9).toString());
+            pst.setBoolean(11, Boolean.parseBoolean(columnValues.get(10).toString()));
             
             int rows = pst.executeUpdate();
             
@@ -164,29 +168,34 @@ public class UserDAO {
         conn = new DatabaseConnection().getConnection();
         
         sql = "UPDATE user_management "
-                + "SET first_name=?, "
-                + "middle_name=?, "
-                + "last_name=?, "
-                + "age=?, "
-                + "username=?, "
+                + "SET username=?, "
                 + "password=?, "
                 + "user_type=?, "
+                + "first_name=?, "
+                + "middle_name=?, "
+                + "last_name=?, "
+                + "birthday=?, "
+                + "age=?, "
+                + "address=?, "
+                + "contact=?, "
                 + "gender=? "
-                + "WHERE id=?";   
+                + "WHERE username=?";   
         boolean success = false;
         
         try {
-            pst = conn.prepareStatement(sql);
-            pst.setString(1, columnValues.get(1).toString());
-            pst.setString(2, columnValues.get(2).toString());
-            pst.setString(3, columnValues.get(3).toString());
-            pst.setString(4, columnValues.get(4).toString());
-            pst.setString(5, columnValues.get(5).toString());
-            pst.setString(6, columnValues.get(6).toString());
-            pst.setString(7, columnValues.get(7).toString());
-            pst.setBoolean(8, Boolean.parseBoolean(columnValues.get(8).toString()));
-            pst.setInt(9, Integer.parseInt(columnValues.get(0).toString()));
-            
+            pst = conn.prepareStatement(sql);  
+            pst.setString(1, columnValues.get(0).toString());
+            pst.setString(2, columnValues.get(1).toString());
+            pst.setString(3, columnValues.get(2).toString());
+            pst.setString(4, columnValues.get(3).toString());
+            pst.setString(5, columnValues.get(4).toString());
+            pst.setString(6, columnValues.get(5).toString());
+            pst.setString(7, columnValues.get(6).toString());
+            pst.setString(8, columnValues.get(7).toString());
+            pst.setString(9, columnValues.get(8).toString());
+            pst.setString(10, columnValues.get(9).toString());
+            pst.setBoolean(11, Boolean.parseBoolean(columnValues.get(10).toString()));
+            pst.setString(12, columnValues.get(11).toString());
             int rows = pst.executeUpdate();
             
             if(rows == 1){
@@ -206,15 +215,15 @@ public class UserDAO {
         return success;
     }
     
-    public boolean delete(int id){
+    public boolean delete(String username){
         conn = new DatabaseConnection().getConnection();
         
-        sql = "DELETE FROM user_management WHERE id = ?";   
+        sql = "DELETE FROM user_management WHERE username = ?";   
         boolean success = false;
         
         try {
             pst = conn.prepareStatement(sql);
-            pst.setInt(1, id);
+            pst.setString(1, username);
             
             int rows = pst.executeUpdate();
             
@@ -232,31 +241,47 @@ public class UserDAO {
         
         return success;
     }
-    
-    
-    
-    
+
     public ResultSet readAllSortBy(){
         conn = new DatabaseConnection().getConnection();
         
         sql = "SELECT "
-                + "id, "
+                + "username, "
                 + "concat(last_name,',', first_name,' ', middle_name) AS fullname, "
                 + "age, "
                 + "gender, "
-                + "username, "
                 + "user_type "
                 + "FROM user_management "
-                + "ORDER BY id";
+                + "ORDER BY username";
         
         try {
             pst = conn.prepareStatement(sql);
             rs = pst.executeQuery();
-
         } catch (Exception e) {
-            
             JOptionPane.showMessageDialog(null, e.getMessage());
-           
+        }
+        
+          return rs;
+    }
+    
+    public ResultSet readAllSortBy(String column, String columnValue){
+        conn = new DatabaseConnection().getConnection();
+        
+        sql = "SELECT "
+                + "username, "
+                + "concat(last_name,',', first_name,' ', middle_name) AS fullname, "
+                + "age, "
+                + "gender, "
+                + "user_type "
+                + "FROM user_management "
+                + "WHERE "+column+" LIKE '%"+columnValue+"%' "
+                + "ORDER BY username";
+        
+        try {
+            pst = conn.prepareStatement(sql); 
+            rs = pst.executeQuery();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
         }
         
           return rs;

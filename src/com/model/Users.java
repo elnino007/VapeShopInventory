@@ -5,14 +5,23 @@
  */
 package com.model;
 
+import java.util.Date;
+
 /**
  *
  * @author shaitozen
  */
 public class Users {
     
-    private int id;
-    private String name; 
+    private int id; 
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
     private String firstName;
     private String middleName;
     private String lastName;
@@ -20,18 +29,29 @@ public class Users {
     private String username;
     private String password;
     private String userType;
+    private Date birthday;
+    private String address;
+    private String contact;
+
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
     private boolean gender;
     
     public int getId() {
         return id;
-    }
-    
-      public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public void setId(int id) {
