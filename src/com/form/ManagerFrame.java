@@ -173,7 +173,7 @@ public final class ManagerFrame extends javax.swing.JFrame {
                 btnUsersActionPerformed(evt);
             }
         });
-        jPanel1.add(btnUsers, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 620, 200, 50));
+        jPanel1.add(btnUsers, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 630, 200, 50));
 
         btnHome.setBackground(new java.awt.Color(0, 102, 102));
         btnHome.setForeground(new java.awt.Color(51, 51, 51));
@@ -184,18 +184,19 @@ public final class ManagerFrame extends javax.swing.JFrame {
                 btnHomeActionPerformed(evt);
             }
         });
-        jPanel1.add(btnHome, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 200, 200, 50));
+        jPanel1.add(btnHome, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 210, 200, 50));
 
         btnLogout.setBackground(new java.awt.Color(0, 102, 102));
         btnLogout.setForeground(new java.awt.Color(51, 51, 51));
         btnLogout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/logout.png"))); // NOI18N
         btnLogout.setText("Logout");
+        btnLogout.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         btnLogout.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLogoutActionPerformed(evt);
             }
         });
-        jPanel1.add(btnLogout, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 690, 200, 50));
+        jPanel1.add(btnLogout, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 190, 100, 20));
 
         btnProduct.setBackground(new java.awt.Color(0, 102, 102));
         btnProduct.setForeground(new java.awt.Color(51, 51, 51));
@@ -206,7 +207,7 @@ public final class ManagerFrame extends javax.swing.JFrame {
                 btnProductActionPerformed(evt);
             }
         });
-        jPanel1.add(btnProduct, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 260, 200, 50));
+        jPanel1.add(btnProduct, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 280, 200, 50));
 
         btnReport.setBackground(new java.awt.Color(0, 102, 102));
         btnReport.setForeground(new java.awt.Color(51, 51, 51));
@@ -217,7 +218,7 @@ public final class ManagerFrame extends javax.swing.JFrame {
                 btnReportActionPerformed(evt);
             }
         });
-        jPanel1.add(btnReport, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 470, 200, 50));
+        jPanel1.add(btnReport, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 480, 200, 50));
 
         btnCustomer.setBackground(new java.awt.Color(0, 102, 102));
         btnCustomer.setForeground(new java.awt.Color(51, 51, 51));
@@ -228,7 +229,7 @@ public final class ManagerFrame extends javax.swing.JFrame {
                 btnCustomerActionPerformed(evt);
             }
         });
-        jPanel1.add(btnCustomer, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 330, 200, 50));
+        jPanel1.add(btnCustomer, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 340, 200, 50));
 
         btnReward.setBackground(new java.awt.Color(0, 102, 102));
         btnReward.setForeground(new java.awt.Color(51, 51, 51));
@@ -239,7 +240,7 @@ public final class ManagerFrame extends javax.swing.JFrame {
                 btnRewardActionPerformed(evt);
             }
         });
-        jPanel1.add(btnReward, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 400, 200, 50));
+        jPanel1.add(btnReward, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 410, 200, 50));
 
         btnHistory.setBackground(new java.awt.Color(0, 102, 102));
         btnHistory.setForeground(new java.awt.Color(51, 51, 51));
@@ -250,7 +251,7 @@ public final class ManagerFrame extends javax.swing.JFrame {
                 btnHistoryActionPerformed(evt);
             }
         });
-        jPanel1.add(btnHistory, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 550, 200, 50));
+        jPanel1.add(btnHistory, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 560, 200, 50));
 
         lbUserType.setFont(new java.awt.Font("Verdana", 1, 24)); // NOI18N
         lbUserType.setForeground(new java.awt.Color(255, 255, 255));
