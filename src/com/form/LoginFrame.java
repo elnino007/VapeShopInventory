@@ -388,7 +388,7 @@ public class LoginFrame extends javax.swing.JFrame {
                 this.setVisible(false);
                 }
       
-                else  if(userType.equals("Admin") || userType.equals("Manager")){
+                else  if(userType.equals("Owner") || userType.equals("Manager")){
                     ManagerFrame managerFrame = new ManagerFrame();
                     managerFrame.gender = rs.getBoolean("gender");
                     managerFrame.lbUserType.setText(rs.getString("user_type"));

@@ -34,7 +34,7 @@ public final class ManagerFrame extends javax.swing.JFrame {
         initComponents();
         setIconImage();
         showTime();
-        showDate();
+      
         showHomeInternalFrame();
         this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
        
@@ -53,7 +53,7 @@ public final class ManagerFrame extends javax.swing.JFrame {
     }
     
     public void showProductInternalFrame(){
-        ProductInternalFrame productInternalFrame = ProductInternalFrame.getInstance(this);
+        InventoryInternalFrame productInternalFrame = InventoryInternalFrame.getInstance(this);
         showInternalFrame(productInternalFrame);
     }
     
@@ -97,6 +97,7 @@ public final class ManagerFrame extends javax.swing.JFrame {
                     Date d = new Date();
                     SimpleDateFormat s = new SimpleDateFormat("hh:mm:ss a");
                     jLabelTime.setText(s.format(d));
+                    showDate();
                 }
             }).start();
         } catch (Exception e) {
@@ -201,7 +202,7 @@ public final class ManagerFrame extends javax.swing.JFrame {
         btnProduct.setBackground(new java.awt.Color(0, 102, 102));
         btnProduct.setForeground(new java.awt.Color(51, 51, 51));
         btnProduct.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/product.png"))); // NOI18N
-        btnProduct.setText("Product");
+        btnProduct.setText("Inventory");
         btnProduct.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnProductActionPerformed(evt);

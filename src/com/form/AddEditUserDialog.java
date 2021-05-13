@@ -67,6 +67,22 @@ public class AddEditUserDialog extends javax.swing.JDialog {
         this.username = username;
     }
     
+    public void numberOnly(char c, JTextField jTextField){
+        if(Character.isLetter(c)) {
+             jTextField.setEditable(false);
+         } else {
+             jTextField.setEditable(true);
+         }
+    }
+    
+    public void letterOnly(char c, JTextField jTextField){
+        if(Character.isLetter(c) || Character.isWhitespace(c) || Character.isISOControl(c)) {
+             jTextField.setEditable(true);
+         } else {
+             jTextField.setEditable(false);
+         }
+    }
+    
      public void showMessageError(String errorString){
         JOptionPane.showMessageDialog(null, 
                 errorString, 
@@ -203,12 +219,8 @@ public class AddEditUserDialog extends javax.swing.JDialog {
                     rbFemale.setSelected(true);
                 }
         } catch (Exception e) {
+             JOptionPane.showMessageDialog(this, e);
         }
-      
-      
-        
-       
-        
        
     }
     
@@ -332,12 +344,13 @@ public class AddEditUserDialog extends javax.swing.JDialog {
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Users");
 
         jPanel1.setBackground(new java.awt.Color(185, 221, 217));
 
         lbAddEditUsersTitle.setFont(new java.awt.Font("Verdana", 1, 24)); // NOI18N
         lbAddEditUsersTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbAddEditUsersTitle.setText("Registration Form");
+        lbAddEditUsersTitle.setText("Add Users");
 
         jPanel2.setBackground(new java.awt.Color(0, 51, 51));
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Account", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Verdana", 0, 18), new java.awt.Color(255, 255, 255))); // NOI18N
@@ -427,6 +440,12 @@ public class AddEditUserDialog extends javax.swing.JDialog {
         jPanel3.setBackground(new java.awt.Color(0, 51, 51));
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Personal Information", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Verdana", 1, 18), new java.awt.Color(255, 255, 255))); // NOI18N
 
+        txtFirstName.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtFirstNameKeyPressed(evt);
+            }
+        });
+
         jLabel6.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setText("First Name :");
@@ -435,9 +454,21 @@ public class AddEditUserDialog extends javax.swing.JDialog {
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
         jLabel7.setText("Middle Name :");
 
+        txtMiddleName.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtMiddleNameKeyPressed(evt);
+            }
+        });
+
         jLabel8.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         jLabel8.setForeground(new java.awt.Color(255, 255, 255));
         jLabel8.setText("Last Name :");
+
+        txtLastName.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtLastNameKeyPressed(evt);
+            }
+        });
 
         jDateBirthday.setDateFormatString("MM/dd/yyyy");
         jDateBirthday.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
@@ -463,6 +494,12 @@ public class AddEditUserDialog extends javax.swing.JDialog {
         jLabel13.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         jLabel13.setForeground(new java.awt.Color(255, 255, 255));
         jLabel13.setText("Contact :");
+
+        txtContact.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtContactKeyPressed(evt);
+            }
+        });
 
         jLabel14.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         jLabel14.setForeground(new java.awt.Color(255, 255, 255));
@@ -669,7 +706,7 @@ public class AddEditUserDialog extends javax.swing.JDialog {
         // TODO add your handling code here:
         if(validation()){
             if(username.equals("new")){
-                if(isUsernameExisted() == true){
+                if(isUsernameExisted()){
                  addUsers();
                 } else {
                     showMessageError("The username is already existed!");
@@ -701,6 +738,22 @@ public class AddEditUserDialog extends javax.swing.JDialog {
             }
         }
     }//GEN-LAST:event_txtUsernameKeyReleased
+
+    private void txtFirstNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFirstNameKeyPressed
+         letterOnly(evt.getKeyChar(), txtFirstName);
+    }//GEN-LAST:event_txtFirstNameKeyPressed
+
+    private void txtMiddleNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMiddleNameKeyPressed
+         letterOnly(evt.getKeyChar(), txtMiddleName);
+    }//GEN-LAST:event_txtMiddleNameKeyPressed
+
+    private void txtLastNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtLastNameKeyPressed
+         letterOnly(evt.getKeyChar(), txtLastName);
+    }//GEN-LAST:event_txtLastNameKeyPressed
+
+    private void txtContactKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtContactKeyPressed
+         numberOnly(evt.getKeyChar(), txtContact);
+    }//GEN-LAST:event_txtContactKeyPressed
 
     
    

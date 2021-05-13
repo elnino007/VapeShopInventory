@@ -7,6 +7,7 @@ package com.form;
 
 import com.dao.UserDAO;
 import com.utils.CustomDBUtils;
+import com.utils.TableHelper;
 import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -55,7 +56,12 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
     
     public void updateTableUsers(){
        rs = userDAO.readAllSortBy();
-       tblUsers.setModel(CustomDBUtils.resultSetToTableModel(rs));
+       tblUsers.setModel(CustomDBUtils.resultSetToTableModel(rs,"For User"));
+       
+       
+         TableHelper.renderHeader(tblUsers, "Username","Name","Age","Gender",
+                 "User Type");
+         
        tblUsers.getColumnModel().getColumn(0).setPreferredWidth(100);
        tblUsers.getColumnModel().getColumn(1).setPreferredWidth(200);
        tblUsers.getColumnModel().getColumn(2).setPreferredWidth(50);
@@ -98,6 +104,18 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
         
     }
     
+    public String getSelectedUserType(){
+          int row = tblUsers.getSelectedRow();
+          TableModel model = tblUsers.getModel();
+          
+          String userTypeSelected = model.getValueAt(row, 4).toString();
+       
+          return userTypeSelected;
+        
+    }
+    
+    
+    
     public Boolean getSelectedUserType(String userType){
           boolean success = false;
           int row = tblUsers.getSelectedRow();
@@ -105,7 +123,7 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
           
           String userTypeSelected = model.getValueAt(row, 4).toString();
           
-          if ((userType.equals("Manager") && userTypeSelected.equals("Admin")) 
+          if ((userType.equals("Manager") && userTypeSelected.equals("Owner")) 
                   || (userType.equals("Manager") && userTypeSelected.equals("Manager"))) {
               success = true;
           } else {
@@ -460,6 +478,7 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
                             String username = getSelectedUsername();
                             setButton();
                             deleteUsers(username);
+                            clear();
                         }   
                     }
                }
@@ -469,6 +488,8 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
         } catch(NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, ex);
         }
+        
+        
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
@@ -486,22 +507,31 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
                 JOptionPane.ERROR_MESSAGE);
                 
             } else {
-               if(userType.equals("Admin")){
-                addEditUserDiaglog.cmbUserType.removeAllItems();
-                addEditUserDiaglog.cmbUserType.addItem("Admin");
-                addEditUserDiaglog.cmbUserType.addItem("Manager");
-                addEditUserDiaglog.cmbUserType.addItem("Cashier");
+               if(userType.equals("Owner")){
+                   if(getSelectedUserType().equals("Owner")){
+                        addEditUserDiaglog.cmbUserType.removeAllItems();
+                        addEditUserDiaglog.cmbUserType.addItem("Owner");
+                   } else{
+                        addEditUserDiaglog.cmbUserType.removeAllItems();
+                        addEditUserDiaglog.cmbUserType.addItem("Cashier");
+                        addEditUserDiaglog.cmbUserType.addItem("Manager");
+                   }
+                   
+              
+                
             } else {
                 addEditUserDiaglog.cmbUserType.removeAllItems();
-                addEditUserDiaglog.cmbUserType.addItem("Cashier");
+               
             }
             addEditUserDiaglog.setVisible(true);
+            clear();
             }
             
             
         } catch(NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, ex);
         }
+       
        
         
       
@@ -511,9 +541,8 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
         try {       
             AddEditUserDialog addEditUserDiaglog = new AddEditUserDialog(managerFrame, this, true, "new");
  
-            if(userType.equals("Admin")){
+            if(userType.equals("Owner")){
                 addEditUserDiaglog.cmbUserType.removeAllItems();
-                addEditUserDiaglog.cmbUserType.addItem("Admin");
                 addEditUserDiaglog.cmbUserType.addItem("Manager");
                 addEditUserDiaglog.cmbUserType.addItem("Cashier");
             } else {

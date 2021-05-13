@@ -5,7 +5,7 @@
  */
 package com.form;
 
-import com.model.Users;
+import com.model.User;
 import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;

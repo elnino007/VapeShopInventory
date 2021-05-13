@@ -18,14 +18,63 @@ public class CustomDBUtils {
             Vector columnNames = new Vector();
 
             // Get the column names
-//            for (int column = 0; column < numberOfColumns; column++) {
-//                columnNames.addElement(metaData.getColumnLabel(column + 1));
-//            }
-            columnNames.addElement("Username");
-            columnNames.addElement("Full Name");
-            columnNames.addElement("Age");
-            columnNames.addElement("Gender");
-            columnNames.addElement("User Type");
+            for (int column = 0; column < numberOfColumns; column++) {
+                columnNames.addElement(metaData.getColumnLabel(column + 1));
+            }
+//            columnNames.addElement("Username");
+//            columnNames.addElement("Full Name");
+//            columnNames.addElement("Age");
+//            columnNames.addElement("Gender");
+//            columnNames.addElement("User Type");
+
+            // Get all rows.
+            Vector rows = new Vector();
+
+            while (rs.next()) {
+                Vector newRow = new Vector();
+
+                for (int i = 1; i <= numberOfColumns; i++) {            
+                         newRow.addElement(rs.getObject(i)); 
+                }
+
+                rows.addElement(newRow);
+            }
+            
+            DefaultTableModel tableModel = new DefaultTableModel() {
+          
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                   //all cells false
+                   return false;
+                }
+            };
+            tableModel.setDataVector(rows, columnNames);
+
+//            return new DefaultTableModel(rows, columnNames);
+            return tableModel;
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return null;
+        }
+    }
+    
+    public static TableModel resultSetToTableModel(ResultSet rs, String forUser) {
+        try {
+            ResultSetMetaData metaData = rs.getMetaData();
+            int numberOfColumns = metaData.getColumnCount();
+           
+            Vector columnNames = new Vector();
+
+            // Get the column names
+            for (int column = 0; column < numberOfColumns; column++) {
+                columnNames.addElement(metaData.getColumnLabel(column + 1));
+            }
+//            columnNames.addElement("Username");
+//            columnNames.addElement("Full Name");
+//            columnNames.addElement("Age");
+//            columnNames.addElement("Gender");
+//            columnNames.addElement("User Type");
 
             // Get all rows.
             Vector rows = new Vector();

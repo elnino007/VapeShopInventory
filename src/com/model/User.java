@@ -11,17 +11,9 @@ import java.util.Date;
  *
  * @author shaitozen
  */
-public class Users {
+public class User {
     
     private int id; 
-
-    public String getContact() {
-        return contact;
-    }
-
-    public void setContact(String contact) {
-        this.contact = contact;
-    }
     private String firstName;
     private String middleName;
     private String lastName;
@@ -122,7 +114,13 @@ public class Users {
         this.gender = gender;
     }
     
-    
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
     
     
 }
