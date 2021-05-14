@@ -56,6 +56,7 @@ public class ProductStockDAO {
         conn = new DatabaseConnection().getConnection();
         
         sql = "SELECT ps.id, "
+                + "p.product_category_name, "
                 + "p.product_name, "
                 + "ps.quantity "
                 + "FROM product AS p "

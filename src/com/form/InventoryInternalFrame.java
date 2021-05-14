@@ -13,6 +13,7 @@ import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableModel;
@@ -45,7 +46,7 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
         bui.setNorthPane(null);
         
         setButtonForProduct();
-       
+        setButtonForStock();
         
     }
      
@@ -70,7 +71,7 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
        rs = productStockDAO.readAllSortByID();
        tblStocks.setModel(CustomDBUtils.resultSetToTableModel(rs));
        
-         TableHelper.renderHeader(tblStocks, "Product ID",
+         TableHelper.renderHeader(tblStocks, "Product ID", "Product Category", 
                  "Product Name", "Quantity"); 
     } 
     
@@ -86,11 +87,17 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
     }
     
     private void clearForProduct(){
-       btnNew.setEnabled(true);
-       btnEdit.setEnabled(false);
-       btnDelete.setEnabled(false);
-     
+       btnNewProduct.setEnabled(true);
+       btnEditProduct.setEnabled(false);
+       btnDeleteProduct.setEnabled(false);
        tblProduct.clearSelection();
+    }
+    
+    private void clearForStock(){
+       btnNewProduct.setEnabled(false);
+       btnEditProduct.setEnabled(false);
+       btnDeleteProduct.setEnabled(false);
+       tblStocks.clearSelection();
     }
     
     public void setButtonForProduct() {
@@ -98,19 +105,54 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
             int row = tblProduct.getSelectedRow();
             
             if (row == -1){
-               btnNew.setEnabled(true);
-               btnEdit.setEnabled(false);
-               btnDelete.setEnabled(false);
+               btnNewProduct.setEnabled(true);
+               btnEditProduct.setEnabled(false);
+               btnDeleteProduct.setEnabled(false);
           
             }else{
-                btnNew.setEnabled(false);
-                btnEdit.setEnabled(true);
-                btnDelete.setEnabled(true);
+                btnNewProduct.setEnabled(false);
+                btnEditProduct.setEnabled(true);
+                btnDeleteProduct.setEnabled(true);
             
             }
         
         } catch (NumberFormatException e) {
         }
+    }
+    
+    public void setButtonForStock() {
+        try {
+            int row = tblStocks.getSelectedRow();
+            
+            if (row == -1){
+               btnNewStock.setEnabled(false);
+               btnEditStock.setEnabled(false);
+               btnDeleteStock.setEnabled(false);
+          
+            }else{
+                btnNewStock.setEnabled(true);
+                btnEditStock.setEnabled(true);
+                btnDeleteStock.setEnabled(true);
+            
+            }
+        
+        } catch (NumberFormatException e) {
+        }
+    }
+    
+    
+    public void getSelectedInfoForStock(AddEditProductStockDialog addEditProductStockDialog){
+         int row = tblStocks.getSelectedRow();
+         TableModel model = tblStocks.getModel();
+         
+         String productID = model.getValueAt(row, 0).toString();
+         String productCategory = model.getValueAt(row, 1).toString();
+         String productName = model.getValueAt(row, 2).toString();
+         
+         addEditProductStockDialog.lbProductID.setText(productID);
+         addEditProductStockDialog.lbProductCategory.setText(productCategory);
+         addEditProductStockDialog.lbProductName.setText(productName);
+         
     }
     
     public int getSelectedIDForProduct(){
@@ -143,11 +185,11 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
         jLabel2 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jToolBar2 = new javax.swing.JToolBar();
-        btnNew = new javax.swing.JButton();
-        btnEdit = new javax.swing.JButton();
-        btnDelete = new javax.swing.JButton();
-        btnDelete1 = new javax.swing.JButton();
-        btnInfo = new javax.swing.JButton();
+        btnNewProduct = new javax.swing.JButton();
+        btnEditProduct = new javax.swing.JButton();
+        btnDeleteProduct = new javax.swing.JButton();
+        btnClearProduct = new javax.swing.JButton();
+        btnInfoProduct = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         cmbSearch1 = new javax.swing.JComboBox<>();
         txtSearch1 = new javax.swing.JTextField();
@@ -158,11 +200,11 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
         jLabel3 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jToolBar3 = new javax.swing.JToolBar();
-        btnNew1 = new javax.swing.JButton();
-        btnEdit1 = new javax.swing.JButton();
-        btnDelete2 = new javax.swing.JButton();
-        btnDelete3 = new javax.swing.JButton();
-        btnInfo1 = new javax.swing.JButton();
+        btnNewStock = new javax.swing.JButton();
+        btnEditStock = new javax.swing.JButton();
+        btnDeleteStock = new javax.swing.JButton();
+        btnClearStock = new javax.swing.JButton();
+        btnInfoStock = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblStocks = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
@@ -217,68 +259,68 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
         jToolBar2.setFloatable(false);
         jToolBar2.setRollover(true);
 
-        btnNew.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/add.png"))); // NOI18N
-        btnNew.setText("New");
-        btnNew.setFocusable(false);
-        btnNew.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnNew.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnNew.addActionListener(new java.awt.event.ActionListener() {
+        btnNewProduct.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/add.png"))); // NOI18N
+        btnNewProduct.setText("New");
+        btnNewProduct.setFocusable(false);
+        btnNewProduct.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnNewProduct.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnNewProduct.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNewActionPerformed(evt);
+                btnNewProductActionPerformed(evt);
             }
         });
-        jToolBar2.add(btnNew);
+        jToolBar2.add(btnNewProduct);
 
-        btnEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/edit.png"))); // NOI18N
-        btnEdit.setText("Edit");
-        btnEdit.setEnabled(false);
-        btnEdit.setFocusable(false);
-        btnEdit.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnEdit.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+        btnEditProduct.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/edit.png"))); // NOI18N
+        btnEditProduct.setText("Edit");
+        btnEditProduct.setEnabled(false);
+        btnEditProduct.setFocusable(false);
+        btnEditProduct.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnEditProduct.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnEditProduct.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEditActionPerformed(evt);
+                btnEditProductActionPerformed(evt);
             }
         });
-        jToolBar2.add(btnEdit);
+        jToolBar2.add(btnEditProduct);
 
-        btnDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/delete_16x.png"))); // NOI18N
-        btnDelete.setText("Delete");
-        btnDelete.setEnabled(false);
-        btnDelete.setFocusable(false);
-        btnDelete.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnDelete.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+        btnDeleteProduct.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/delete_16x.png"))); // NOI18N
+        btnDeleteProduct.setText("Delete");
+        btnDeleteProduct.setEnabled(false);
+        btnDeleteProduct.setFocusable(false);
+        btnDeleteProduct.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnDeleteProduct.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnDeleteProduct.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteActionPerformed(evt);
+                btnDeleteProductActionPerformed(evt);
             }
         });
-        jToolBar2.add(btnDelete);
+        jToolBar2.add(btnDeleteProduct);
 
-        btnDelete1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/delete.png"))); // NOI18N
-        btnDelete1.setText("Clear");
-        btnDelete1.setFocusable(false);
-        btnDelete1.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnDelete1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnDelete1.addActionListener(new java.awt.event.ActionListener() {
+        btnClearProduct.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/delete.png"))); // NOI18N
+        btnClearProduct.setText("Clear");
+        btnClearProduct.setFocusable(false);
+        btnClearProduct.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnClearProduct.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnClearProduct.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDelete1ActionPerformed(evt);
+                btnClearProductActionPerformed(evt);
             }
         });
-        jToolBar2.add(btnDelete1);
+        jToolBar2.add(btnClearProduct);
 
-        btnInfo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/info.png"))); // NOI18N
-        btnInfo.setText("Info");
-        btnInfo.setEnabled(false);
-        btnInfo.setFocusable(false);
-        btnInfo.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnInfo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnInfo.addActionListener(new java.awt.event.ActionListener() {
+        btnInfoProduct.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/info.png"))); // NOI18N
+        btnInfoProduct.setText("Info");
+        btnInfoProduct.setEnabled(false);
+        btnInfoProduct.setFocusable(false);
+        btnInfoProduct.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnInfoProduct.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnInfoProduct.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnInfoActionPerformed(evt);
+                btnInfoProductActionPerformed(evt);
             }
         });
-        jToolBar2.add(btnInfo);
+        jToolBar2.add(btnInfoProduct);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -405,68 +447,68 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
         jToolBar3.setFloatable(false);
         jToolBar3.setRollover(true);
 
-        btnNew1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/add.png"))); // NOI18N
-        btnNew1.setText("Add");
-        btnNew1.setFocusable(false);
-        btnNew1.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnNew1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnNew1.addActionListener(new java.awt.event.ActionListener() {
+        btnNewStock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/add.png"))); // NOI18N
+        btnNewStock.setText("Add");
+        btnNewStock.setFocusable(false);
+        btnNewStock.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnNewStock.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnNewStock.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNew1ActionPerformed(evt);
+                btnNewStockActionPerformed(evt);
             }
         });
-        jToolBar3.add(btnNew1);
+        jToolBar3.add(btnNewStock);
 
-        btnEdit1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/edit.png"))); // NOI18N
-        btnEdit1.setText("Edit");
-        btnEdit1.setEnabled(false);
-        btnEdit1.setFocusable(false);
-        btnEdit1.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnEdit1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnEdit1.addActionListener(new java.awt.event.ActionListener() {
+        btnEditStock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/edit.png"))); // NOI18N
+        btnEditStock.setText("Edit");
+        btnEditStock.setEnabled(false);
+        btnEditStock.setFocusable(false);
+        btnEditStock.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnEditStock.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnEditStock.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEdit1ActionPerformed(evt);
+                btnEditStockActionPerformed(evt);
             }
         });
-        jToolBar3.add(btnEdit1);
+        jToolBar3.add(btnEditStock);
 
-        btnDelete2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/delete_16x.png"))); // NOI18N
-        btnDelete2.setText("Delete");
-        btnDelete2.setEnabled(false);
-        btnDelete2.setFocusable(false);
-        btnDelete2.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnDelete2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnDelete2.addActionListener(new java.awt.event.ActionListener() {
+        btnDeleteStock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/delete_16x.png"))); // NOI18N
+        btnDeleteStock.setText("Delete");
+        btnDeleteStock.setEnabled(false);
+        btnDeleteStock.setFocusable(false);
+        btnDeleteStock.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnDeleteStock.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnDeleteStock.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDelete2ActionPerformed(evt);
+                btnDeleteStockActionPerformed(evt);
             }
         });
-        jToolBar3.add(btnDelete2);
+        jToolBar3.add(btnDeleteStock);
 
-        btnDelete3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/delete.png"))); // NOI18N
-        btnDelete3.setText("Clear");
-        btnDelete3.setFocusable(false);
-        btnDelete3.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnDelete3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnDelete3.addActionListener(new java.awt.event.ActionListener() {
+        btnClearStock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/delete.png"))); // NOI18N
+        btnClearStock.setText("Clear");
+        btnClearStock.setFocusable(false);
+        btnClearStock.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnClearStock.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnClearStock.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDelete3ActionPerformed(evt);
+                btnClearStockActionPerformed(evt);
             }
         });
-        jToolBar3.add(btnDelete3);
+        jToolBar3.add(btnClearStock);
 
-        btnInfo1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/info.png"))); // NOI18N
-        btnInfo1.setText("Info");
-        btnInfo1.setEnabled(false);
-        btnInfo1.setFocusable(false);
-        btnInfo1.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnInfo1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnInfo1.addActionListener(new java.awt.event.ActionListener() {
+        btnInfoStock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/info.png"))); // NOI18N
+        btnInfoStock.setText("Info");
+        btnInfoStock.setEnabled(false);
+        btnInfoStock.setFocusable(false);
+        btnInfoStock.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnInfoStock.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnInfoStock.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnInfo1ActionPerformed(evt);
+                btnInfoStockActionPerformed(evt);
             }
         });
-        jToolBar3.add(btnInfo1);
+        jToolBar3.add(btnInfoStock);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -486,11 +528,11 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Product ID", "Product Name", "Quantity"
+                "Product ID", "Product Category", "Product Name", "Quantity"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, true, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -609,20 +651,20 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
         
     }//GEN-LAST:event_formInternalFrameOpened
 
-    private void btnNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewActionPerformed
+    private void btnNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewProductActionPerformed
         AddEditProductDialog addEditProductDialog = new AddEditProductDialog(managerFrame, this, true,
         productDAO.autoNumber(), "New");
         addEditProductDialog.setVisible(true);
-    }//GEN-LAST:event_btnNewActionPerformed
+    }//GEN-LAST:event_btnNewProductActionPerformed
 
-    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+    private void btnEditProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditProductActionPerformed
         AddEditProductDialog addEditProductDialog = new AddEditProductDialog(managerFrame, this, true,
         getSelectedIDForProduct(), "Edit");
         addEditProductDialog.setVisible(true);
         clearForProduct();
-    }//GEN-LAST:event_btnEditActionPerformed
+    }//GEN-LAST:event_btnEditProductActionPerformed
 
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+    private void btnDeleteProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteProductActionPerformed
         int input = JOptionPane.showConfirmDialog(null, 
                         "Are you sure do you want to delete this product?", 
                         "Warning", 
@@ -634,38 +676,43 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
                             deleteProduct(id);
                             clearForProduct();
                         }
-    }//GEN-LAST:event_btnDeleteActionPerformed
+    }//GEN-LAST:event_btnDeleteProductActionPerformed
 
-    private void btnDelete1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelete1ActionPerformed
+    private void btnClearProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearProductActionPerformed
         clearForProduct();
-    }//GEN-LAST:event_btnDelete1ActionPerformed
+    }//GEN-LAST:event_btnClearProductActionPerformed
 
-    private void btnInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInfoActionPerformed
+    private void btnInfoProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInfoProductActionPerformed
 
-    }//GEN-LAST:event_btnInfoActionPerformed
+    }//GEN-LAST:event_btnInfoProductActionPerformed
 
-    private void btnNew1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNew1ActionPerformed
+    private void btnNewStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewStockActionPerformed
+        AddEditProductStockDialog addEditProductStockDialog = new 
+        AddEditProductStockDialog(managerFrame, this, true, "Add");
+        getSelectedInfoForStock(addEditProductStockDialog);
+        addEditProductStockDialog.setVisible(true);
+        
+        
+    }//GEN-LAST:event_btnNewStockActionPerformed
+
+    private void btnEditStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditStockActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnNew1ActionPerformed
+    }//GEN-LAST:event_btnEditStockActionPerformed
 
-    private void btnEdit1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEdit1ActionPerformed
+    private void btnDeleteStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteStockActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnEdit1ActionPerformed
+    }//GEN-LAST:event_btnDeleteStockActionPerformed
 
-    private void btnDelete2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelete2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnDelete2ActionPerformed
+    private void btnClearStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearStockActionPerformed
+        clearForStock();
+    }//GEN-LAST:event_btnClearStockActionPerformed
 
-    private void btnDelete3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelete3ActionPerformed
+    private void btnInfoStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInfoStockActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnDelete3ActionPerformed
-
-    private void btnInfo1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInfo1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnInfo1ActionPerformed
+    }//GEN-LAST:event_btnInfoStockActionPerformed
 
     private void tblStocksMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblStocksMouseReleased
-   
+        setButtonForStock();
     }//GEN-LAST:event_tblStocksMouseReleased
 
     private void cmbSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbSearchActionPerformed
@@ -707,16 +754,16 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnDelete;
-    private javax.swing.JButton btnDelete1;
-    private javax.swing.JButton btnDelete2;
-    private javax.swing.JButton btnDelete3;
-    private javax.swing.JButton btnEdit;
-    private javax.swing.JButton btnEdit1;
-    private javax.swing.JButton btnInfo;
-    private javax.swing.JButton btnInfo1;
-    private javax.swing.JButton btnNew;
-    private javax.swing.JButton btnNew1;
+    private javax.swing.JButton btnClearProduct;
+    private javax.swing.JButton btnClearStock;
+    private javax.swing.JButton btnDeleteProduct;
+    private javax.swing.JButton btnDeleteStock;
+    private javax.swing.JButton btnEditProduct;
+    private javax.swing.JButton btnEditStock;
+    private javax.swing.JButton btnInfoProduct;
+    private javax.swing.JButton btnInfoStock;
+    private javax.swing.JButton btnNewProduct;
+    private javax.swing.JButton btnNewStock;
     private javax.swing.JComboBox<String> cmbSearch;
     private javax.swing.JComboBox<String> cmbSearch1;
     private javax.swing.JButton jButton1;
