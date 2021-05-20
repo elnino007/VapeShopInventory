@@ -59,7 +59,7 @@ public class CustomDBUtils {
         }
     }
     
-    public static TableModel resultSetToTableModel(ResultSet rs, String forUser) {
+    public static TableModel resultSetToTableModel(ResultSet rs, int gender) {
         try {
             ResultSetMetaData metaData = rs.getMetaData();
             int numberOfColumns = metaData.getColumnCount();
@@ -70,11 +70,6 @@ public class CustomDBUtils {
             for (int column = 0; column < numberOfColumns; column++) {
                 columnNames.addElement(metaData.getColumnLabel(column + 1));
             }
-//            columnNames.addElement("Username");
-//            columnNames.addElement("Full Name");
-//            columnNames.addElement("Age");
-//            columnNames.addElement("Gender");
-//            columnNames.addElement("User Type");
 
             // Get all rows.
             Vector rows = new Vector();
@@ -83,7 +78,7 @@ public class CustomDBUtils {
                 Vector newRow = new Vector();
 
                 for (int i = 1; i <= numberOfColumns; i++) {  
-                    if(i == 4){
+                    if(i == gender){
                         boolean genderStatus = (Boolean) rs.getObject(i);
                
                         if(genderStatus == false) {

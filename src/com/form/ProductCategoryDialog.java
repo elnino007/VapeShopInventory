@@ -249,6 +249,7 @@ public class ProductCategoryDialog extends javax.swing.JDialog {
                 return canEdit [columnIndex];
             }
         });
+        tblProductCategory.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblProductCategory.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 tblProductCategoryMouseReleased(evt);

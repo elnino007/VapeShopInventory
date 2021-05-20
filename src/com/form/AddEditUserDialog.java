@@ -12,6 +12,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Month;
@@ -56,10 +57,10 @@ public class AddEditUserDialog extends javax.swing.JDialog {
        
         
         if (username.equals("new")){
-            lbAddEditUsersTitle.setText("Add Users");
+            lbAddEditUsersTitle.setText("Add User");
             btnSaveUpdate.setText("Save");
         }else{
-            lbAddEditUsersTitle.setText("Edit Users");
+            lbAddEditUsersTitle.setText("Edit User");
             btnSaveUpdate.setText("Update");
             getUsersInfo(userDAO.getUsersInfo(username));
         }       
@@ -214,11 +215,13 @@ public class AddEditUserDialog extends javax.swing.JDialog {
             txtContact.setText(getUsersInfo.get(8).toString());
             boolean genderStatus = (Boolean) getUsersInfo.get(9);
                 if(genderStatus == false){
-                    rbMale.setSelected(true);
+                    rbMale.setSelected(false);
+                    genderImage();
                 } else {
                     rbFemale.setSelected(true);
+                    genderImage();
                 }
-        } catch (Exception e) {
+        } catch (ParseException e) {
              JOptionPane.showMessageDialog(this, e);
         }
        
@@ -350,7 +353,7 @@ public class AddEditUserDialog extends javax.swing.JDialog {
 
         lbAddEditUsersTitle.setFont(new java.awt.Font("Verdana", 1, 24)); // NOI18N
         lbAddEditUsersTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbAddEditUsersTitle.setText("Add Users");
+        lbAddEditUsersTitle.setText("Add User");
 
         jPanel2.setBackground(new java.awt.Color(0, 51, 51));
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Account", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Verdana", 0, 18), new java.awt.Color(255, 255, 255))); // NOI18N

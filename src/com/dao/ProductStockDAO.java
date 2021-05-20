@@ -52,6 +52,148 @@ public class ProductStockDAO {
         return success;
     }
     
+    public int getQuantityStock(int id){
+        
+        conn = new DatabaseConnection().getConnection();
+        sql = "SELECT quantity FROM product_stock WHERE id = ?";
+        int quantityStock = 0;
+        try {
+            pst = conn.prepareStatement(sql);
+            pst.setInt(1, id);
+            rs = pst.executeQuery();
+            
+            while(rs.next()){
+                quantityStock = rs.getInt("quantity");
+            }
+        } catch (Exception e) {
+              JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+        
+        return quantityStock;
+    }
+    
+    public boolean add(List<Object> columnValues){
+        int quantityTotal = getQuantityStock(Integer.parseInt(columnValues.get(0).toString())) +
+        Integer.parseInt(columnValues.get(1).toString());
+        
+        conn = new DatabaseConnection().getConnection();
+        
+        sql = "UPDATE product_stock SET quantity = ? WHERE id =?";   
+        boolean success = false;
+
+       
+        try {
+            pst = conn.prepareStatement(sql);
+            pst.setInt(1, quantityTotal);
+            pst.setInt(2, Integer.parseInt(columnValues.get(0).toString()));
+            
+            int rows = pst.executeUpdate();
+            
+            if(rows == 1){
+                success = true;
+            }else{
+                throw new SQLException("Add in Stocks failed, no rows affected.");
+            }
+            
+            conn.close();        
+                    
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+
+        return success;
+    }
+    
+    public boolean update(List<Object> columnValues){
+//        int quantityTotal = getQuantityStock(Integer.parseInt(columnValues.get(0).toString())) +
+//        Integer.parseInt(columnValues.get(1).toString());
+        
+        conn = new DatabaseConnection().getConnection();
+        
+        sql = "UPDATE product_stock SET quantity = ? WHERE id =?";   
+        boolean success = false;
+
+       
+        try {
+            pst = conn.prepareStatement(sql);
+            pst.setInt(1, Integer.parseInt(columnValues.get(1).toString()));
+            pst.setInt(2, Integer.parseInt(columnValues.get(0).toString()));
+            
+            int rows = pst.executeUpdate();
+            
+            if(rows == 1){
+                success = true;
+            }else{
+                throw new SQLException("Add in Stocks failed, no rows affected.");
+            }
+            
+            conn.close();        
+                    
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+
+        return success;
+    }
+    
+    public boolean delete(int id){
+        conn = new DatabaseConnection().getConnection();
+        
+        sql = "DELETE FROM product_stock WHERE id = ?";   
+        boolean success = false;
+        
+        try {
+            pst = conn.prepareStatement(sql);
+            pst.setInt(1, id);
+            
+            int rows = pst.executeUpdate();
+            
+            if(rows == 1){
+                success = true;
+            }else{
+                throw new SQLException("Delete in Product failed, no rows affected.");
+            }
+            
+            conn.close();        
+                    
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+        
+        return success;
+    }
+    
+    public boolean makeZeroTheStocks(int id){
+//        int quantityTotal = getQuantityStock(Integer.parseInt(columnValues.get(0).toString())) +
+//        Integer.parseInt(columnValues.get(1).toString());
+        
+        conn = new DatabaseConnection().getConnection();
+        
+        sql = "UPDATE product_stock SET quantity = 0 WHERE id =?";   
+        boolean success = false;
+
+       
+        try {
+            pst = conn.prepareStatement(sql);
+            pst.setInt(1, id);
+            
+            int rows = pst.executeUpdate();
+            
+            if(rows == 1){
+                success = true;
+            }else{
+                throw new SQLException("Delete in Stocks failed, no rows affected.");
+            }
+            
+            conn.close();        
+                    
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+
+        return success;
+    }
+    
     public ResultSet readAllSortByID(){
         conn = new DatabaseConnection().getConnection();
         

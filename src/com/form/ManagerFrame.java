@@ -65,7 +65,11 @@ public final class ManagerFrame extends javax.swing.JFrame {
     public void showUsersInternalFrame(){
         UsersInternalFrame usersInternalFrame = UsersInternalFrame.getInstance(this, lbUserType.getText(), username);
         showInternalFrame(usersInternalFrame);
-            
+    }
+    
+     public void showCustomersInternalFrame(){
+        CustomerInternalFrame customerInternalFrame = CustomerInternalFrame.getInstance(this);
+        showInternalFrame(customerInternalFrame);
     }
     
     public void genderIcon(){
@@ -224,7 +228,7 @@ public final class ManagerFrame extends javax.swing.JFrame {
         btnCustomer.setBackground(new java.awt.Color(0, 102, 102));
         btnCustomer.setForeground(new java.awt.Color(51, 51, 51));
         btnCustomer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/customer.png"))); // NOI18N
-        btnCustomer.setText("Customer");
+        btnCustomer.setText("Customers");
         btnCustomer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCustomerActionPerformed(evt);
@@ -424,7 +428,7 @@ public final class ManagerFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnReportActionPerformed
 
     private void btnCustomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCustomerActionPerformed
-        // TODO add your handling code here:
+        showCustomersInternalFrame();
     }//GEN-LAST:event_btnCustomerActionPerformed
 
     private void btnRewardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRewardActionPerformed

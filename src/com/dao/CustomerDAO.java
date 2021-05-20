@@ -16,19 +16,20 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author shaitozen007
+ * @author shaitozen
  */
-public class ProductDAO {
+public class CustomerDAO {
+    
     public String sql;
     public Connection conn = null;
     public PreparedStatement pst = null;
     public ResultSet rs = null;
     
-    public List<Object> getProductInfo(int id){
+    public List<Object> getCustomerInfo(int id){
         List<Object> getUsersInfo =  new ArrayList<>();
         
          conn = new DatabaseConnection().getConnection();
-         sql = "SELECT * FROM product WHERE id=?";
+         sql = "SELECT * FROM customer WHERE id=?";
          
          try {
              pst = conn.prepareStatement(sql);
@@ -36,13 +37,13 @@ public class ProductDAO {
              rs = pst.executeQuery();
             
             while(rs.next()){
-                getUsersInfo.add(rs.getString("barcode"));
-                getUsersInfo.add(rs.getString("product_name"));
-                getUsersInfo.add(rs.getString("product_category_name"));
-                getUsersInfo.add(rs.getString("description"));
-                getUsersInfo.add(rs.getString("purchase_price"));
-                getUsersInfo.add(rs.getString("selling_price"));      
-                getUsersInfo.add(rs.getString("points")); 
+                getUsersInfo.add(rs.getString("first_name"));
+                getUsersInfo.add(rs.getString("middle_name"));
+                getUsersInfo.add(rs.getString("last_name"));
+                getUsersInfo.add(rs.getString("age"));
+                getUsersInfo.add(rs.getBoolean("gender"));
+                getUsersInfo.add(rs.getString("address"));      
+                getUsersInfo.add(rs.getString("contact_number")); 
             }    
         } catch (Exception e) {
               JOptionPane.showMessageDialog(null, e.getMessage());
@@ -53,26 +54,26 @@ public class ProductDAO {
     public boolean create(List<Object> columnValues){
         conn = new DatabaseConnection().getConnection();
         
-        sql = "INSERT INTO product VALUES(?,?,?,?,?,?,?,?)";   
+        sql = "INSERT INTO customer VALUES(?,?,?,?,?,?,?,?)";   
         boolean success = false;
         
         try {
             pst = conn.prepareStatement(sql);
-            pst.setInt(1, Integer.parseInt(columnValues.get(0).toString()));
+            pst.setString(1, columnValues.get(0).toString());
             pst.setString(2, columnValues.get(1).toString());
             pst.setString(3, columnValues.get(2).toString());
             pst.setString(4, columnValues.get(3).toString());
             pst.setString(5, columnValues.get(4).toString());
-            pst.setDouble(6, Double.parseDouble(columnValues.get(5).toString()));
-            pst.setDouble(7, Double.parseDouble(columnValues.get(6).toString()));
-            pst.setInt(8, Integer.parseInt(columnValues.get(7).toString()));
+            pst.setBoolean(6, Boolean.parseBoolean(columnValues.get(5).toString()));
+            pst.setString(7, columnValues.get(6).toString());
+            pst.setString(8, columnValues.get(7).toString());   
             
             int rows = pst.executeUpdate();
             
             if(rows == 1){
                 success = true;
             }else{
-                throw new SQLException("Create in Product failed, no rows affected.");
+                throw new SQLException("Create in User failed, no rows affected.");
             }
             
             conn.close();        
@@ -80,21 +81,21 @@ public class ProductDAO {
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
-
+        
         return success;
     }
     
     public boolean update(List<Object> columnValues){
         conn = new DatabaseConnection().getConnection();
         
-        sql = "UPDATE product "
-                + "SET barcode=?, "
-                + "product_name=?, "
-                + "product_category_name=?, "
-                + "description=?, "
-                + "purchase_price=?, "
-                + "selling_price=?, "
-                + "points=? "
+        sql = "UPDATE customer "
+                + "SET first_name=?, "
+                + "middle_name=?, "
+                + "last_name=?, "
+                + "age=?, "
+                + "gender=?, "
+                + "address=?, "
+                + "contact_number=? "
                 + "WHERE id=?";   
         boolean success = false;
         
@@ -103,10 +104,10 @@ public class ProductDAO {
             pst.setString(1, columnValues.get(1).toString());
             pst.setString(2, columnValues.get(2).toString());
             pst.setString(3, columnValues.get(3).toString());
-            pst.setString(4, columnValues.get(4).toString());
-            pst.setDouble(5, Double.parseDouble(columnValues.get(5).toString()));
-            pst.setDouble(6, Double.parseDouble(columnValues.get(6).toString()));
-            pst.setInt(7, Integer.parseInt(columnValues.get(7).toString()));
+            pst.setInt(4, Integer.parseInt(columnValues.get(4).toString()));
+            pst.setBoolean(5, Boolean.parseBoolean(columnValues.get(5).toString()));
+            pst.setString(6, columnValues.get(5).toString());
+            pst.setString(7, columnValues.get(7).toString());
             pst.setInt(8, Integer.parseInt(columnValues.get(0).toString()));
  
             int rows = pst.executeUpdate();
@@ -126,7 +127,7 @@ public class ProductDAO {
     public boolean delete(int id){
         conn = new DatabaseConnection().getConnection();
         
-        sql = "DELETE FROM product WHERE id = ?";   
+        sql = "DELETE FROM customer WHERE id = ?";   
         boolean success = false;
         
         try {
@@ -150,62 +151,9 @@ public class ProductDAO {
         return success;
     }
     
-    public boolean checkBarcodeExisted(String barcode){
-        conn = new DatabaseConnection().getConnection();
-        
-        sql = "SELECT * FROM product WHERE barcode=?";   
-        boolean success = false;
-        
-        try {
-            pst = conn.prepareStatement(sql);
-            pst.setString(1, barcode);
-            
-            rs = pst.executeQuery();
-            
-            if(rs.next() == true){
-                success = true;
-            }else{
-                success = false;
-            }
-
-            conn.close();        
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
-        }
-        
-        return success;
-    }
-    
-    public boolean checkBarcodeExisted(String barcode, int id){
-        conn = new DatabaseConnection().getConnection();
-        
-        sql = "SELECT * FROM product WHERE barcode=? AND id<>?";   
-        boolean success = false;
-        
-        try {
-            pst = conn.prepareStatement(sql);
-            pst.setString(1, barcode);
-            pst.setInt(2, id);
-            
-            rs = pst.executeQuery();
-            
-            if(rs.next() == true){
-                success = true;
-            }else{
-                success = false;
-            }
-
-            conn.close();        
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
-        }
-        
-        return success;
-    }
-    
     public int autoNumber(){
           conn = new DatabaseConnection().getConnection();
-          sql = "SELECT MAX(id) as number FROM product";
+          sql = "SELECT MAX(id) as number FROM customer";
           int autoNumber = 0;
           try {
             pst = conn.prepareStatement(sql);
@@ -224,14 +172,14 @@ public class ProductDAO {
     public ResultSet readAllSortByID(){
         conn = new DatabaseConnection().getConnection();
         
-        sql = "SELECT id,"
-                + "barcode,"
-                + "product_name, "
-                + "product_category_name,"
-                + "purchase_price, "
-                + "selling_price, "
-                + "points "
-                + "FROM product ORDER BY id";
+         sql = "SELECT "
+                + "id, "
+                + "concat(last_name,',', first_name,' ', middle_name) AS fullname, "
+                + "age, "
+                + "gender, "
+                + "contact_number "
+                + "FROM customer "
+                + "ORDER BY id";
         
         try {
             pst = conn.prepareStatement(sql);
@@ -242,6 +190,4 @@ public class ProductDAO {
         
           return rs;
     } 
-    
-    
 }

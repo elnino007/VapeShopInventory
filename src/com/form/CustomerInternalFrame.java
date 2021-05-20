@@ -5,128 +5,81 @@
  */
 package com.form;
 
-import com.dao.ProductDAO;
-import com.dao.ProductStockDAO;
+import com.dao.CustomerDAO;
+import com.dao.CustomerRFIDDAO;
 import com.utils.CustomDBUtils;
 import com.utils.TableHelper;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 /**
- *z
+ *
  * @author shaitozen
  */
-public class InventoryInternalFrame extends javax.swing.JInternalFrame {
-    
-  
-    private final ManagerFrame managerFrame;
-    final private ProductDAO productDAO = new ProductDAO();
-    final private ProductStockDAO productStockDAO = new ProductStockDAO();
-    private ResultSet rs = null;
-    private int id;
+public class CustomerInternalFrame extends javax.swing.JInternalFrame {
 
-  
-    /**
-     * Creates new form UsersInternalFrame
-     */
-     
-    public InventoryInternalFrame(ManagerFrame managerFrame) {
+    private final ManagerFrame managerFrame;
+    final private CustomerDAO customerDAO = new CustomerDAO();
+    final private CustomerRFIDDAO customerRFIDDAO = new CustomerRFIDDAO();
+    private ResultSet rs = null;
+    
+    public CustomerInternalFrame(ManagerFrame managerFrame) {
         initComponents();
+        
         this.managerFrame = managerFrame;
-               
+        
         this.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         BasicInternalFrameUI bui = (BasicInternalFrameUI) this.getUI();
         bui.setNorthPane(null);
-        
-        
-         
     }
-     
-    private static InventoryInternalFrame myInstance;
-    public static InventoryInternalFrame getInstance(ManagerFrame managerFrame){
-//        if(myInstance == null){
-            myInstance = new InventoryInternalFrame(managerFrame);
-//        }
+    
+    private static CustomerInternalFrame myInstance;
+    public static CustomerInternalFrame getInstance(ManagerFrame managerFrame){
+        if(myInstance == null){
+            myInstance = new CustomerInternalFrame(managerFrame);
+        }
+        
         return myInstance;
     }
     
-    public void updateTableProduct(){
-       rs = productDAO.readAllSortByID();
-       tblProduct.setModel(CustomDBUtils.resultSetToTableModel(rs));
-       
-         TableHelper.renderHeader(tblProduct, "Product ID",
-                 "Barcode", "Product Name",
-                 "Product Category", "Purchase Price", "Selling Price"); 
-    } 
-    
-    public void updateTableStock(){
-       rs = productStockDAO.readAllSortByID();
-       tblStocks.setModel(CustomDBUtils.resultSetToTableModel(rs));
-       
-         TableHelper.renderHeader(tblStocks, "Product ID", "Product Category", 
-                 "Product Name", "Quantity"); 
-    } 
-    
-    public void deleteProduct(int id){
+    public void updateTableCustomer(){
+        rs = customerDAO.readAllSortByID();
+        tblCustomer.setModel(CustomDBUtils.resultSetToTableModel(rs,4));
         
-        boolean success = productDAO.delete(id);
-        
-        if(success){
-            JOptionPane.showMessageDialog(null, "Successfully deleted.");
-            productStockDAO.delete(id);
-            updateTableProduct();
-            updateTableStock();
-        }   
+           TableHelper.renderHeader(tblCustomer, "Customer ID","Full Name",
+                   "Age","Gender","Contact Number");
     }
     
-    public void deleteStock(int id){
+    public void updateTableRFID(){
+        rs = customerRFIDDAO.readAllSortByID();
+        tblRFID.setModel(CustomDBUtils.resultSetToTableModel(rs));
         
-        boolean success = productStockDAO.makeZeroTheStocks(id);
-        
-        if(success){
-            JOptionPane.showMessageDialog(null, "Successfully deleted.");
-            updateTableStock();
-        }   
+           TableHelper.renderHeader(tblRFID, "Customer ID","Full Name",
+                   "RFID Number");
     }
     
-    private void clearForProduct(){
-       btnNewProduct.setEnabled(true);
-       btnEditProduct.setEnabled(false);
-       btnDeleteProduct.setEnabled(false);
-       tblProduct.clearSelection();
+    private void clearForCustomer(){
+       btnNewCustomer.setEnabled(true);
+       btnEditCustomer.setEnabled(false);
+       btnDeleteCustomer.setEnabled(false);
+       tblCustomer.clearSelection();
     }
     
-    private void clearForStock(){
-       btnNewStock.setEnabled(false);
-       btnEditStock.setEnabled(false);
-       btnDeleteStock.setEnabled(false);
-       tblStocks.clearSelection();
-    }
-    
-    public void setButtonForProduct() {
+    public void setButtonForCustomer() {
         try {
-            int row = tblProduct.getSelectedRow();
+            int row = tblCustomer.getSelectedRow();
             
             if (row == -1){
-               btnNewProduct.setEnabled(true);
-               btnEditProduct.setEnabled(false);
-               btnDeleteProduct.setEnabled(false);
+               btnNewCustomer.setEnabled(true);
+               btnEditCustomer.setEnabled(false);
+               btnDeleteCustomer.setEnabled(false);
           
             }else{
-                btnNewProduct.setEnabled(false);
-                btnEditProduct.setEnabled(true);
-                btnDeleteProduct.setEnabled(true);
+                btnNewCustomer.setEnabled(false);
+                btnEditCustomer.setEnabled(true);
+                btnDeleteCustomer.setEnabled(true);
             
             }
         
@@ -134,104 +87,40 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
         }
     }
     
-    public void setButtonForStock() {
-        try {
-            int row = tblStocks.getSelectedRow();
-            
-            if (row == -1){
-               btnNewStock.setEnabled(false);
-               btnEditStock.setEnabled(false);
-               btnDeleteStock.setEnabled(false);
-          
-            }else{
-                btnNewStock.setEnabled(true);
-                btnEditStock.setEnabled(true);
-                btnDeleteStock.setEnabled(true);
-            
-            }
+//    public void deleteProduct(int id){
+//        
+//        boolean success = productDAO.delete(id);
+//        
+//        if(success){
+//            JOptionPane.showMessageDialog(null, "Successfully deleted.");
+//            productStockDAO.delete(id);
+//            updateTableProduct();
+//            updateTableStock();
+//        }   
+//    }
+    
+    public void deleteCustomer(int id) {
         
-        } catch (NumberFormatException e) {
+        boolean success = customerDAO.delete(id);
+        
+        if(success) {
+            JOptionPane.showMessageDialog(null, "Successfully deleted.");
+            customerRFIDDAO.delete(id);
+            updateTableCustomer();
+            updateTableRFID();
         }
-    }
-    
-     public void changeTable(JTable table) {
-        
-        table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
-            @Override
-            public Component getTableCellRendererComponent(JTable table,
-                    Object value, boolean isSelected, boolean hasFocus, int row, int col) {
-
-//                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
-
-                int quantity = (int) table.getModel().getValueAt(row, 3);
-                if (quantity == 0) {
-                    setBackground(Color.RED);
-                    setForeground(Color.BLACK);
-                } 
-//                else {
-//                    setBackground(table.getBackground());
-//                    setForeground(table.getForeground());
-//                }      
-                
-                if (quantity != 0) {
-                    setBackground(Color.GREEN);
-                    setForeground(Color.BLACK);
-                } 
-                
-                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
-                return this;
-            }   
-        });
-       
-      
-    }
-    
-    
-    public void getSelectedInfoForStock(AddEditProductStockDialog addEditProductStockDialog, String type){
-         int row = tblStocks.getSelectedRow();
-         TableModel model = tblStocks.getModel();
-         
-         String productID = model.getValueAt(row, 0).toString();
-         String productCategory = model.getValueAt(row, 1).toString();
-         String productName = model.getValueAt(row, 2).toString();
-         String quantity = model.getValueAt(row, 3).toString();
-         
-         
-         addEditProductStockDialog.lbProductID.setText(productID);
-         addEditProductStockDialog.lbProductCategory.setText(productCategory);
-         addEditProductStockDialog.lbProductName.setText(productName);
-         
-         if(type == "Update"){
-             addEditProductStockDialog.txtQuantity.setText(quantity);
-         }
-         
     }
     
     public int getSelectedIDForProduct(){
-          int row = tblProduct.getSelectedRow();
-          TableModel model = tblProduct.getModel();
+          int row = tblCustomer.getSelectedRow();
+          TableModel model = tblCustomer.getModel();
           
           int productId = Integer.parseInt(model.getValueAt(row, 0).toString());
        
           return productId;
         
     } 
-    
-    public int getSelectedIDForStock(){
-          int row = tblStocks.getSelectedRow();
-          TableModel model = tblStocks.getModel();
-          
-          int productId = Integer.parseInt(model.getValueAt(row, 0).toString());
-       
-          return productId;
-        
-    } 
-    
-    
- 
 
-  
-    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -247,17 +136,17 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
         jLabel2 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jToolBar2 = new javax.swing.JToolBar();
-        btnNewProduct = new javax.swing.JButton();
-        btnEditProduct = new javax.swing.JButton();
-        btnDeleteProduct = new javax.swing.JButton();
-        btnClearProduct = new javax.swing.JButton();
-        btnInfoProduct = new javax.swing.JButton();
+        btnNewCustomer = new javax.swing.JButton();
+        btnEditCustomer = new javax.swing.JButton();
+        btnDeleteCustomer = new javax.swing.JButton();
+        btnClearCustomer = new javax.swing.JButton();
+        btnInfoCustomer = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         cmbSearch1 = new javax.swing.JComboBox<>();
         txtSearch1 = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
-        tblProduct = new javax.swing.JTable();
+        tblCustomer = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
@@ -268,19 +157,13 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
         btnClearStock = new javax.swing.JButton();
         btnInfoStock = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblStocks = new javax.swing.JTable();
+        tblRFID = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         cmbSearch = new javax.swing.JComboBox<>();
         txtSearch = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
 
-        setBorder(null);
-        setClosable(true);
-        setResizable(true);
-        setTitle("Products");
-        setFocusable(false);
-        setPreferredSize(new java.awt.Dimension(1166, 694));
-        setRequestFocusEnabled(false);
+        setTitle("Customers");
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
                 formInternalFrameActivated(evt);
@@ -296,7 +179,6 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
             public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
             }
             public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
-                formInternalFrameOpened(evt);
             }
         });
 
@@ -312,7 +194,7 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
         jLabel2.setFont(new java.awt.Font("Verdana", 1, 36)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(0, 102, 102));
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("Products Information");
+        jLabel2.setText("Customers Information");
         jLabel2.setFocusable(false);
         jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
@@ -321,68 +203,68 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
         jToolBar2.setFloatable(false);
         jToolBar2.setRollover(true);
 
-        btnNewProduct.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/add.png"))); // NOI18N
-        btnNewProduct.setText("New");
-        btnNewProduct.setFocusable(false);
-        btnNewProduct.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnNewProduct.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnNewProduct.addActionListener(new java.awt.event.ActionListener() {
+        btnNewCustomer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/add.png"))); // NOI18N
+        btnNewCustomer.setText("New");
+        btnNewCustomer.setFocusable(false);
+        btnNewCustomer.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnNewCustomer.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnNewCustomer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNewProductActionPerformed(evt);
+                btnNewCustomerActionPerformed(evt);
             }
         });
-        jToolBar2.add(btnNewProduct);
+        jToolBar2.add(btnNewCustomer);
 
-        btnEditProduct.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/edit.png"))); // NOI18N
-        btnEditProduct.setText("Edit");
-        btnEditProduct.setEnabled(false);
-        btnEditProduct.setFocusable(false);
-        btnEditProduct.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnEditProduct.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnEditProduct.addActionListener(new java.awt.event.ActionListener() {
+        btnEditCustomer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/edit.png"))); // NOI18N
+        btnEditCustomer.setText("Edit");
+        btnEditCustomer.setEnabled(false);
+        btnEditCustomer.setFocusable(false);
+        btnEditCustomer.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnEditCustomer.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnEditCustomer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEditProductActionPerformed(evt);
+                btnEditCustomerActionPerformed(evt);
             }
         });
-        jToolBar2.add(btnEditProduct);
+        jToolBar2.add(btnEditCustomer);
 
-        btnDeleteProduct.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/delete_16x.png"))); // NOI18N
-        btnDeleteProduct.setText("Delete");
-        btnDeleteProduct.setEnabled(false);
-        btnDeleteProduct.setFocusable(false);
-        btnDeleteProduct.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnDeleteProduct.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnDeleteProduct.addActionListener(new java.awt.event.ActionListener() {
+        btnDeleteCustomer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/delete_16x.png"))); // NOI18N
+        btnDeleteCustomer.setText("Delete");
+        btnDeleteCustomer.setEnabled(false);
+        btnDeleteCustomer.setFocusable(false);
+        btnDeleteCustomer.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnDeleteCustomer.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnDeleteCustomer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteProductActionPerformed(evt);
+                btnDeleteCustomerActionPerformed(evt);
             }
         });
-        jToolBar2.add(btnDeleteProduct);
+        jToolBar2.add(btnDeleteCustomer);
 
-        btnClearProduct.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/delete.png"))); // NOI18N
-        btnClearProduct.setText("Clear");
-        btnClearProduct.setFocusable(false);
-        btnClearProduct.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnClearProduct.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnClearProduct.addActionListener(new java.awt.event.ActionListener() {
+        btnClearCustomer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/delete.png"))); // NOI18N
+        btnClearCustomer.setText("Clear");
+        btnClearCustomer.setFocusable(false);
+        btnClearCustomer.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnClearCustomer.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnClearCustomer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnClearProductActionPerformed(evt);
+                btnClearCustomerActionPerformed(evt);
             }
         });
-        jToolBar2.add(btnClearProduct);
+        jToolBar2.add(btnClearCustomer);
 
-        btnInfoProduct.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/info.png"))); // NOI18N
-        btnInfoProduct.setText("Info");
-        btnInfoProduct.setEnabled(false);
-        btnInfoProduct.setFocusable(false);
-        btnInfoProduct.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnInfoProduct.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnInfoProduct.addActionListener(new java.awt.event.ActionListener() {
+        btnInfoCustomer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/info.png"))); // NOI18N
+        btnInfoCustomer.setText("Info");
+        btnInfoCustomer.setEnabled(false);
+        btnInfoCustomer.setFocusable(false);
+        btnInfoCustomer.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnInfoCustomer.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnInfoCustomer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnInfoProductActionPerformed(evt);
+                btnInfoCustomerActionPerformed(evt);
             }
         });
-        jToolBar2.add(btnInfoProduct);
+        jToolBar2.add(btnInfoCustomer);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -428,29 +310,29 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
             }
         });
 
-        tblProduct.setModel(new javax.swing.table.DefaultTableModel(
+        tblCustomer.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "ProductID", "Barcode", "Product Name", "Product Category", "Purchase Price", "Selling Price", "Reward Points"
+                "Customer ID", "Full Name", "Age", "Gender", "Contact Number"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, true, false, false, false, true
+                false, false, false, true, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        tblProduct.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        tblProduct.addMouseListener(new java.awt.event.MouseAdapter() {
+        tblCustomer.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tblCustomer.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
-                tblProductMouseReleased(evt);
+                tblCustomerMouseReleased(evt);
             }
         });
-        jScrollPane2.setViewportView(tblProduct);
+        jScrollPane2.setViewportView(tblCustomer);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -491,9 +373,7 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
-        jLabel2.getAccessibleContext().setAccessibleName("Product Information");
-
-        jTabbedPane1.addTab("Products", jPanel1);
+        jTabbedPane1.addTab("Customer", jPanel1);
 
         jPanel2.setBackground(new java.awt.Color(185, 221, 217));
 
@@ -501,7 +381,7 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
         jLabel3.setFont(new java.awt.Font("Verdana", 1, 36)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 102, 102));
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("Stocks Information");
+        jLabel3.setText("RFID Information");
         jLabel3.setFocusable(false);
         jLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
@@ -586,29 +466,29 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
                 .addComponent(jToolBar3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        tblStocks.setModel(new javax.swing.table.DefaultTableModel(
+        tblRFID.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Product ID", "Product Category", "Product Name", "Quantity"
+                "Customer ID", "Full Name", "RFID Number"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, true, false, false
+                false, true, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        tblStocks.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        tblStocks.addMouseListener(new java.awt.event.MouseAdapter() {
+        tblRFID.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tblRFID.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
-                tblStocksMouseReleased(evt);
+                tblRFIDMouseReleased(evt);
             }
         });
-        jScrollPane1.setViewportView(tblStocks);
+        jScrollPane1.setViewportView(tblRFID);
 
         jLabel1.setFont(new java.awt.Font("Verdana", 0, 16)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(21, 177, 255));
@@ -679,17 +559,17 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
                 .addGap(25, 25, 25))
         );
 
-        jTabbedPane1.addTab("Stocks", jPanel2);
+        jTabbedPane1.addTab("RFID", jPanel2);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1150, Short.MAX_VALUE)
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 667, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 671, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -706,114 +586,41 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void formInternalFrameActivated(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameActivated
-        updateTableProduct();
-        updateTableStock();
-        changeTable(tblStocks);
-        setButtonForProduct();
-        setButtonForStock();
+    private void btnNewCustomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewCustomerActionPerformed
+        AddEditCustomerDialog addEditCustomerDialog = new 
+        AddEditCustomerDialog(managerFrame, this, true, customerDAO.autoNumber(), "New");
+        addEditCustomerDialog.setVisible(true);     
+    }//GEN-LAST:event_btnNewCustomerActionPerformed
+
+    private void btnEditCustomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditCustomerActionPerformed
+        AddEditCustomerDialog addEditCustomerDialog = new 
+        AddEditCustomerDialog(managerFrame, this, true, getSelectedIDForProduct(), "Update");
+        addEditCustomerDialog.setVisible(true);  
         
-    }//GEN-LAST:event_formInternalFrameActivated
+        clearForCustomer();
+    }//GEN-LAST:event_btnEditCustomerActionPerformed
 
-    private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
-        
-    }//GEN-LAST:event_formInternalFrameOpened
-
-    private void btnNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewProductActionPerformed
-        AddEditProductDialog addEditProductDialog = new AddEditProductDialog(managerFrame, this, true,
-        productDAO.autoNumber(), "New");
-        addEditProductDialog.setVisible(true);
-    }//GEN-LAST:event_btnNewProductActionPerformed
-
-    private void btnEditProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditProductActionPerformed
-        AddEditProductDialog addEditProductDialog = new AddEditProductDialog(managerFrame, this, true,
-        getSelectedIDForProduct(), "Edit");
-        addEditProductDialog.setVisible(true);
-        clearForProduct();
-    }//GEN-LAST:event_btnEditProductActionPerformed
-
-    private void btnDeleteProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteProductActionPerformed
+    private void btnDeleteCustomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteCustomerActionPerformed
         int input = JOptionPane.showConfirmDialog(null, 
-                        "Are you sure do you want to delete this product?", 
+                        "Are you sure do you want to delete this customer?", 
                         "Warning", 
                         JOptionPane.YES_NO_OPTION, 
                         JOptionPane.WARNING_MESSAGE);
                         if(input == 0) {
                             int id = getSelectedIDForProduct();
-                            setButtonForProduct();
-                            deleteProduct(id);
-                            clearForProduct();
+                            setButtonForCustomer();
+                            deleteCustomer(id);
+                            clearForCustomer();
                         }
-    }//GEN-LAST:event_btnDeleteProductActionPerformed
+    }//GEN-LAST:event_btnDeleteCustomerActionPerformed
 
-    private void btnClearProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearProductActionPerformed
-        clearForProduct();
-    }//GEN-LAST:event_btnClearProductActionPerformed
+    private void btnClearCustomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearCustomerActionPerformed
+        clearForCustomer();
+    }//GEN-LAST:event_btnClearCustomerActionPerformed
 
-    private void btnInfoProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInfoProductActionPerformed
+    private void btnInfoCustomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInfoCustomerActionPerformed
 
-    }//GEN-LAST:event_btnInfoProductActionPerformed
-
-    private void btnNewStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewStockActionPerformed
-        AddEditProductStockDialog addEditProductStockDialog = new 
-        AddEditProductStockDialog(managerFrame, this, true, "Add");
-        getSelectedInfoForStock(addEditProductStockDialog, "Add");
-        addEditProductStockDialog.setVisible(true);
-        
-        
-    }//GEN-LAST:event_btnNewStockActionPerformed
-
-    private void btnEditStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditStockActionPerformed
-        AddEditProductStockDialog addEditProductStockDialog = new 
-        AddEditProductStockDialog(managerFrame, this, true, "Update");
-        getSelectedInfoForStock(addEditProductStockDialog, "Update");
-        addEditProductStockDialog.setVisible(true);
-        
-        clearForStock();
-    }//GEN-LAST:event_btnEditStockActionPerformed
-
-    private void btnDeleteStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteStockActionPerformed
-        int input = JOptionPane.showConfirmDialog(null, 
-                        "Are you sure do you want to delete this product?", 
-                        "Warning", 
-                        JOptionPane.YES_NO_OPTION, 
-                        JOptionPane.WARNING_MESSAGE);
-                        if(input == 0) {
-                            int id = getSelectedIDForStock();
-                            setButtonForProduct();
-                            deleteStock(id);
-                            clearForStock();
-                        }
-    }//GEN-LAST:event_btnDeleteStockActionPerformed
-
-    private void btnClearStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearStockActionPerformed
-        clearForStock();
-    }//GEN-LAST:event_btnClearStockActionPerformed
-
-    private void btnInfoStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInfoStockActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnInfoStockActionPerformed
-
-    private void tblStocksMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblStocksMouseReleased
-        setButtonForStock();
-    }//GEN-LAST:event_tblStocksMouseReleased
-
-    private void cmbSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbSearchActionPerformed
- 
-    }//GEN-LAST:event_cmbSearchActionPerformed
-
-    private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtSearchActionPerformed
-
-    private void txtSearchPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_txtSearchPropertyChange
-
-    }//GEN-LAST:event_txtSearchPropertyChange
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-
-
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnInfoCustomerActionPerformed
 
     private void cmbSearch1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbSearch1ActionPerformed
         // TODO add your handling code here:
@@ -831,21 +638,67 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void tblProductMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblProductMouseReleased
-        setButtonForProduct();
-    }//GEN-LAST:event_tblProductMouseReleased
+    private void tblCustomerMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblCustomerMouseReleased
+        setButtonForCustomer();
+    }//GEN-LAST:event_tblCustomerMouseReleased
+
+    private void btnNewStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewStockActionPerformed
+  
+
+    }//GEN-LAST:event_btnNewStockActionPerformed
+
+    private void btnEditStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditStockActionPerformed
+
+    }//GEN-LAST:event_btnEditStockActionPerformed
+
+    private void btnDeleteStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteStockActionPerformed
+     
+    }//GEN-LAST:event_btnDeleteStockActionPerformed
+
+    private void btnClearStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearStockActionPerformed
+   
+    }//GEN-LAST:event_btnClearStockActionPerformed
+
+    private void btnInfoStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInfoStockActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnInfoStockActionPerformed
+
+    private void tblRFIDMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblRFIDMouseReleased
+
+    }//GEN-LAST:event_tblRFIDMouseReleased
+
+    private void cmbSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbSearchActionPerformed
+
+    }//GEN-LAST:event_cmbSearchActionPerformed
+
+    private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtSearchActionPerformed
+
+    private void txtSearchPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_txtSearchPropertyChange
+
+    }//GEN-LAST:event_txtSearchPropertyChange
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void formInternalFrameActivated(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameActivated
+         updateTableCustomer();
+         updateTableRFID();
+    }//GEN-LAST:event_formInternalFrameActivated
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnClearProduct;
+    private javax.swing.JButton btnClearCustomer;
     private javax.swing.JButton btnClearStock;
-    private javax.swing.JButton btnDeleteProduct;
+    private javax.swing.JButton btnDeleteCustomer;
     private javax.swing.JButton btnDeleteStock;
-    private javax.swing.JButton btnEditProduct;
+    private javax.swing.JButton btnEditCustomer;
     private javax.swing.JButton btnEditStock;
-    private javax.swing.JButton btnInfoProduct;
+    private javax.swing.JButton btnInfoCustomer;
     private javax.swing.JButton btnInfoStock;
-    private javax.swing.JButton btnNewProduct;
+    private javax.swing.JButton btnNewCustomer;
     private javax.swing.JButton btnNewStock;
     private javax.swing.JComboBox<String> cmbSearch;
     private javax.swing.JComboBox<String> cmbSearch1;
@@ -865,8 +718,8 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JToolBar jToolBar2;
     private javax.swing.JToolBar jToolBar3;
-    private javax.swing.JTable tblProduct;
-    private javax.swing.JTable tblStocks;
+    private javax.swing.JTable tblCustomer;
+    private javax.swing.JTable tblRFID;
     private javax.swing.JTextField txtSearch;
     private javax.swing.JTextField txtSearch1;
     // End of variables declaration//GEN-END:variables

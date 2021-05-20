@@ -20,6 +20,7 @@ import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
 /**
@@ -70,6 +71,14 @@ public class AddEditProductDialog extends javax.swing.JDialog {
         }
     }
     
+    public void numberOnly(char c, JTextField jTextField){
+        if(Character.isLetter(c)) {
+             jTextField.setEditable(false);
+         } else {
+             jTextField.setEditable(true);
+         }
+    }
+    
     public void showMessageError(String errorString){
         JOptionPane.showMessageDialog(null, 
                 errorString, 
@@ -117,6 +126,9 @@ public class AddEditProductDialog extends javax.swing.JDialog {
         } else if(txtSellingPrice.getText().length() == 0){
             success = false;
             showMessageError("Please Input Selling Price!");
+        } else if(txtPoints.getText().length() == 0){
+            success = false;
+            showMessageError("Please Input Reward Points!");
         } else if(Double.parseDouble(txtPurchasePrice.getText()) >= Double.parseDouble(txtSellingPrice.getText())){
             success = false;
             showMessageError("Wag malulugi ka!");
@@ -127,7 +139,6 @@ public class AddEditProductDialog extends javax.swing.JDialog {
     
     public void addProducts(){
         boolean success = productDAO.create(getTextField());
-        
         
         if(success){
             JOptionPane.showMessageDialog(null, "Successfully created.");
@@ -158,6 +169,7 @@ public class AddEditProductDialog extends javax.swing.JDialog {
             txtDescription.setText(getProductInfo.get(3).toString());
             txtPurchasePrice.setText(getProductInfo.get(4).toString());
             txtSellingPrice.setText(getProductInfo.get(5).toString());
+            txtPoints.setText(getProductInfo.get(6).toString());
             
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e);
@@ -173,6 +185,7 @@ public class AddEditProductDialog extends javax.swing.JDialog {
         columnValues.add(txtDescription.getText());
         columnValues.add(txtPurchasePrice.getText());
         columnValues.add(txtSellingPrice.getText());
+        columnValues.add(txtPoints.getText());
         
              
         return columnValues;
@@ -221,6 +234,8 @@ public class AddEditProductDialog extends javax.swing.JDialog {
         txtSellingPrice = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtDescription = new javax.swing.JTextArea();
+        jLabel12 = new javax.swing.JLabel();
+        txtPoints = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Products");
@@ -233,7 +248,7 @@ public class AddEditProductDialog extends javax.swing.JDialog {
         jPanel1.setBackground(new java.awt.Color(185, 221, 217));
 
         panelTitle.setBackground(new java.awt.Color(0, 51, 51));
-        panelTitle.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Add Products", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Verdana", 1, 12), new java.awt.Color(255, 255, 255))); // NOI18N
+        panelTitle.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Add Product", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Verdana", 1, 12), new java.awt.Color(255, 255, 255))); // NOI18N
 
         jLabel1.setFont(new java.awt.Font("Verdana", 0, 11)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
@@ -268,7 +283,7 @@ public class AddEditProductDialog extends javax.swing.JDialog {
         jLabel8.setText("Product Category :");
 
         rSButtonIconI1.setBackground(new java.awt.Color(0, 51, 51));
-        rSButtonIconI1.setIcon(new javax.swing.ImageIcon("C:\\Users\\shaitozen007\\Desktop\\icon\\add.png")); // NOI18N
+        rSButtonIconI1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/add.png"))); // NOI18N
         rSButtonIconI1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 rSButtonIconI1ActionPerformed(evt);
@@ -305,36 +320,52 @@ public class AddEditProductDialog extends javax.swing.JDialog {
         txtDescription.setRows(5);
         jScrollPane1.setViewportView(txtDescription);
 
+        jLabel12.setFont(new java.awt.Font("Verdana", 0, 11)); // NOI18N
+        jLabel12.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel12.setText("Reward Points :");
+
+        txtPoints.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtPointsKeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtPointsKeyTyped(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelTitleLayout = new javax.swing.GroupLayout(panelTitle);
         panelTitle.setLayout(panelTitleLayout);
         panelTitleLayout.setHorizontalGroup(
             panelTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelTitleLayout.createSequentialGroup()
                 .addContainerGap(41, Short.MAX_VALUE)
-                .addGroup(panelTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(panelTitleLayout.createSequentialGroup()
-                        .addComponent(btnSaveUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(43, 43, 43)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(34, 34, 34))
-                    .addGroup(panelTitleLayout.createSequentialGroup()
-                        .addGroup(panelTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel8)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(panelTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(txtProductName, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cmbProductCategory, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txtBarcode)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE))))
+                .addGroup(panelTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel8)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(txtProductName, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cmbProductCategory, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtBarcode)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(rSButtonIconI1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelTitleLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnSaveUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(43, 43, 43)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(92, 92, 92))
             .addGroup(panelTitleLayout.createSequentialGroup()
                 .addGap(58, 58, 58)
                 .addGroup(panelTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(panelTitleLayout.createSequentialGroup()
+                        .addComponent(jLabel12)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtPoints, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(panelTitleLayout.createSequentialGroup()
                         .addComponent(jLabel11)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -374,11 +405,15 @@ public class AddEditProductDialog extends javax.swing.JDialog {
                 .addGroup(panelTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel11)
                     .addComponent(txtSellingPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(panelTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel12)
+                    .addComponent(txtPoints, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(panelTitleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSaveUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addGap(22, 22, 22))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -394,8 +429,8 @@ public class AddEditProductDialog extends javax.swing.JDialog {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(panelTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(panelTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -406,7 +441,7 @@ public class AddEditProductDialog extends javax.swing.JDialog {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -473,6 +508,14 @@ public class AddEditProductDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_txtSellingPriceKeyTyped
 
+    private void txtPointsKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPointsKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtPointsKeyTyped
+
+    private void txtPointsKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPointsKeyPressed
+        numberOnly(evt.getKeyChar(), txtPoints);
+    }//GEN-LAST:event_txtPointsKeyPressed
+
     /**
      * @param args the command line arguments
      */
@@ -522,6 +565,7 @@ public class AddEditProductDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
@@ -531,6 +575,7 @@ public class AddEditProductDialog extends javax.swing.JDialog {
     private rojerusan.RSButtonIconI rSButtonIconI1;
     private javax.swing.JTextField txtBarcode;
     private javax.swing.JTextArea txtDescription;
+    private javax.swing.JTextField txtPoints;
     private javax.swing.JTextField txtProductName;
     private javax.swing.JTextField txtPurchasePrice;
     private javax.swing.JTextField txtSellingPrice;

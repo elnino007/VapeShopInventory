@@ -29,14 +29,15 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
     
     private ResultSet rs = null;
     private int id;
-    private String userType;
-    private String username;
+    private final String userType;
+    private final String username;
 
   
     /**
      * Creates new form UsersInternalFrame
      * @param managerFrame
      * @param userType
+     * @param username
      */
      
     public UsersInternalFrame(ManagerFrame managerFrame, String userType, String username) {
@@ -56,10 +57,10 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
     
     public void updateTableUsers(){
        rs = userDAO.readAllSortBy();
-       tblUsers.setModel(CustomDBUtils.resultSetToTableModel(rs,"For User"));
+       tblUsers.setModel(CustomDBUtils.resultSetToTableModel(rs,4));
        
        
-         TableHelper.renderHeader(tblUsers, "Username","Name","Age","Gender",
+         TableHelper.renderHeader(tblUsers, "Username","Full Name","Age","Gender",
                  "User Type");
          
        tblUsers.getColumnModel().getColumn(0).setPreferredWidth(100);
@@ -123,12 +124,8 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
           
           String userTypeSelected = model.getValueAt(row, 4).toString();
           
-          if ((userType.equals("Manager") && userTypeSelected.equals("Owner")) 
-                  || (userType.equals("Manager") && userTypeSelected.equals("Manager"))) {
-              success = true;
-          } else {
-              success = false;
-          }
+          success = (userType.equals("Manager") && userTypeSelected.equals("Owner")) 
+                  || (userType.equals("Manager") && userTypeSelected.equals("Manager"));
           
           return success;
         
@@ -326,7 +323,7 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Username", "Name", "Age", "Gender", "User Type"
+                "Username", "Full Name", "Age", "Gender", "User Type"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -337,6 +334,7 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
+        tblUsers.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblUsers.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 tblUsersMouseReleased(evt);
@@ -361,16 +359,13 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
         jLabel2.setBackground(new java.awt.Color(0, 102, 102));
         jLabel2.setFont(new java.awt.Font("Verdana", 1, 36)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(0, 102, 102));
-        jLabel2.setText("User Information");
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText("Users Information");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 544, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(189, 189, 189))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(204, 204, 204)
                 .addComponent(jLabel1)
@@ -386,6 +381,7 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane1)
                 .addContainerGap())
+            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -495,9 +491,9 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
         // TODO add your handling code here:
        try {
-            String username = getSelectedUsername();
-             
-            AddEditUserDialog addEditUserDiaglog = new AddEditUserDialog(managerFrame, this, true, username);
+            String usernameForEdit = getSelectedUsername();
+                     
+            AddEditUserDialog addEditUserDiaglog = new AddEditUserDialog(managerFrame, this, true, usernameForEdit);
             addEditUserDiaglog.txtUsername.setText(getSelectedUsername());
             if(getSelectedUserType(userType)) {
                 
@@ -515,6 +511,7 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
                         addEditUserDiaglog.cmbUserType.removeAllItems();
                         addEditUserDiaglog.cmbUserType.addItem("Cashier");
                         addEditUserDiaglog.cmbUserType.addItem("Manager");
+                        addEditUserDiaglog.cmbUserType.setSelectedItem(getSelectedUserType());
                    }
                    
               

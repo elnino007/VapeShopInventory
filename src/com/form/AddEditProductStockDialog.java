@@ -5,12 +5,17 @@
  */
 package com.form;
 
+import com.dao.ProductStockDAO;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
 /**
@@ -21,6 +26,7 @@ public class AddEditProductStockDialog extends javax.swing.JDialog {
 
     private InventoryInternalFrame inventoryInternalFrame;
     private String type;
+    final private ProductStockDAO productStockDAO = new ProductStockDAO();
     /**
      * Creates new form AddEditProductStockDialog
      */
@@ -53,6 +59,67 @@ public class AddEditProductStockDialog extends javax.swing.JDialog {
             //getProductInfo(productDAO.getProductInfo(id));
         }
     }
+    
+    public void numberOnly(char c, JTextField jTextField){
+        if(Character.isLetter(c)) {
+             jTextField.setEditable(false);
+         } else {
+             jTextField.setEditable(true);
+         }
+    }
+    
+    public void showMessageError(String errorString){
+        JOptionPane.showMessageDialog(null, 
+                errorString, 
+                "Error!", 
+                JOptionPane.ERROR_MESSAGE);
+    }
+    
+    private Boolean validation(){
+        boolean success = true;
+        
+        if(txtQuantity.getText().length() == 0){
+            success = false;
+            showMessageError("Please Input Quantity!");
+        }
+        
+        return success;
+    }
+    
+    public List<Object> getTextField(){
+        List<Object> columnValues = new ArrayList<>();
+        columnValues.add(lbProductID.getText());
+        columnValues.add(txtQuantity.getText());
+             
+        return columnValues;
+    }
+    
+    public void addStocks(){
+        boolean success = productStockDAO.add(getTextField());
+        
+        if(success){
+            JOptionPane.showMessageDialog(null, "Successfully added.");
+            inventoryInternalFrame.updateTableStock();
+        }
+        
+        dispose();
+    }
+    
+    public void updateStocks(){
+        boolean success = productStockDAO.update(getTextField());
+        
+        if(success){
+            JOptionPane.showMessageDialog(null, "Successfully updated.");
+            inventoryInternalFrame.updateTableStock();
+        }
+        
+        dispose();
+    }
+        
+    
+    
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -115,6 +182,12 @@ public class AddEditProductStockDialog extends javax.swing.JDialog {
         lbProductName.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
         lbProductName.setForeground(new java.awt.Color(255, 255, 255));
         lbProductName.setText("Fruta Kool Orange");
+
+        txtQuantity.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtQuantityKeyPressed(evt);
+            }
+        });
 
         btnSaveUpdate.setBackground(new java.awt.Color(0, 0, 51));
         btnSaveUpdate.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
@@ -226,13 +299,25 @@ public class AddEditProductStockDialog extends javax.swing.JDialog {
 
     private void btnSaveUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveUpdateActionPerformed
         // TODO add your handling code here:
-  
+        if(type.equals("Add")){
+            if(validation()) {
+                addStocks();
+            } 
+        } else {
+            if(validation()) {
+                updateStocks();
+            } 
+        }
     }//GEN-LAST:event_btnSaveUpdateActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void txtQuantityKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtQuantityKeyPressed
+        numberOnly(evt.getKeyChar(), txtQuantity);
+    }//GEN-LAST:event_txtQuantityKeyPressed
 
     /**
      * @param args the command line arguments
@@ -289,6 +374,6 @@ public class AddEditProductStockDialog extends javax.swing.JDialog {
     public javax.swing.JLabel lbProductID;
     public javax.swing.JLabel lbProductName;
     private javax.swing.JPanel panelTitle;
-    private javax.swing.JTextField txtQuantity;
+    public javax.swing.JTextField txtQuantity;
     // End of variables declaration//GEN-END:variables
 }
