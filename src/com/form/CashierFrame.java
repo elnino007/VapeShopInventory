@@ -5,6 +5,9 @@
  */
 package com.form;
 
+import java.awt.Toolkit;
+import javax.swing.JFrame;
+
 /**
  *
  * @author shaitozen
@@ -16,6 +19,13 @@ public class CashierFrame extends javax.swing.JFrame {
      */
     public CashierFrame() {
         initComponents();
+        
+        setIconImage();
+        this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+    }
+    
+    private void setIconImage() {
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resources/Icon-20.png")));
     }
 
     /**
@@ -27,30 +37,207 @@ public class CashierFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel2 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        btnPOS = new rojerusan.RSButtonIconI();
+        btnCustomer = new rojerusan.RSButtonIconI();
+        jLabelAdmin = new javax.swing.JLabel();
+        lbUserType = new javax.swing.JLabel();
+        lbLastname = new javax.swing.JLabel();
+        btnReward = new rojerusan.RSButtonIconI();
+        btnPOS1 = new rojerusan.RSButtonIconI();
+        btnLogout = new rojerusan.RSButtonIconI();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu2 = new javax.swing.JMenu();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Cashier Frame");
+        setResizable(false);
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 3, 36)); // NOI18N
-        jLabel2.setText("UNDER MAINTENANCE");
+        jPanel3.setBackground(new java.awt.Color(185, 221, 217));
+
+        btnPOS.setBackground(new java.awt.Color(0, 102, 102));
+        btnPOS.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/point.png"))); // NOI18N
+        btnPOS.setText("Check Points");
+
+        btnCustomer.setBackground(new java.awt.Color(0, 102, 102));
+        btnCustomer.setForeground(new java.awt.Color(51, 51, 51));
+        btnCustomer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/customer.png"))); // NOI18N
+        btnCustomer.setText("Customers");
+        btnCustomer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCustomerActionPerformed(evt);
+            }
+        });
+
+        jLabelAdmin.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabelAdmin.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/admin_girl_100x.png"))); // NOI18N
+
+        lbUserType.setFont(new java.awt.Font("Verdana", 1, 24)); // NOI18N
+        lbUserType.setForeground(new java.awt.Color(0, 51, 51));
+        lbUserType.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lbUserType.setText("Cashier");
+
+        lbLastname.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+        lbLastname.setForeground(new java.awt.Color(0, 51, 51));
+        lbLastname.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lbLastname.setText("Name: Malabiga");
+        lbLastname.setName(""); // NOI18N
+
+        btnReward.setBackground(new java.awt.Color(0, 102, 102));
+        btnReward.setForeground(new java.awt.Color(51, 51, 51));
+        btnReward.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/reward.png"))); // NOI18N
+        btnReward.setText("Reward");
+        btnReward.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRewardActionPerformed(evt);
+            }
+        });
+
+        btnPOS1.setBackground(new java.awt.Color(0, 102, 102));
+        btnPOS1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/pos-terminal.png"))); // NOI18N
+        btnPOS1.setText("POS");
+        btnPOS1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPOS1ActionPerformed(evt);
+            }
+        });
+
+        btnLogout.setBackground(new java.awt.Color(0, 102, 102));
+        btnLogout.setForeground(new java.awt.Color(51, 51, 51));
+        btnLogout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/logout.png"))); // NOI18N
+        btnLogout.setText("Logout");
+        btnLogout.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLogoutActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabelAdmin, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(lbUserType, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(lbLastname, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(522, 522, 522))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addGap(77, 77, 77)
+                .addComponent(btnPOS1, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 319, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnPOS, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(btnCustomer, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(303, 303, 303)
+                        .addComponent(btnReward, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(71, 71, 71))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(btnLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabelAdmin)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lbUserType, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lbLastname, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(36, 36, 36)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnCustomer, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnReward, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnPOS1, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(108, 108, 108)
+                .addComponent(btnPOS, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(258, Short.MAX_VALUE))
+        );
+
+        jMenuBar1.setBackground(new java.awt.Color(153, 204, 255));
+
+        jMenu2.setText("File");
+
+        jMenuItem3.setText("Change Password");
+        jMenu2.add(jMenuItem3);
+
+        jMenuItem1.setText("Logout");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem1);
+
+        jMenuItem2.setText("Exit");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem2);
+
+        jMenuBar1.add(jMenu2);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 419, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 10, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 108, Short.MAX_VALUE))
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // TODO add your handling code here:
+        dispose();
+        LoginFrame loginFrame = new LoginFrame();
+        loginFrame.setVisible(true);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        // TODO add your handling code here:
+        System.exit(0);
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void btnCustomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCustomerActionPerformed
+//        CustomerFrame customerFrame = new CustomerFrame(this);
+//        customerFrame.setVisible(true);
+          CustomerJDialog customerJDialog = new CustomerJDialog(this, true, this);
+          customerJDialog.setVisible(true);
+    }//GEN-LAST:event_btnCustomerActionPerformed
+
+    private void btnRewardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRewardActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnRewardActionPerformed
+
+    private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
+        // TODO add your handling code here:
+        dispose();
+        LoginFrame loginFrame = new LoginFrame();
+        loginFrame.setVisible(true);
+    }//GEN-LAST:event_btnLogoutActionPerformed
+
+    private void btnPOS1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPOS1ActionPerformed
+        POSDiaglog posDiaglog = new POSDiaglog(this, true);
+        posDiaglog.setVisible(true);
+    }//GEN-LAST:event_btnPOS1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -89,6 +276,19 @@ public class CashierFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel2;
+    private rojerusan.RSButtonIconI btnCustomer;
+    private rojerusan.RSButtonIconI btnLogout;
+    private rojerusan.RSButtonIconI btnPOS;
+    private rojerusan.RSButtonIconI btnPOS1;
+    private rojerusan.RSButtonIconI btnReward;
+    private javax.swing.JLabel jLabelAdmin;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JPanel jPanel3;
+    public javax.swing.JLabel lbLastname;
+    public javax.swing.JLabel lbUserType;
     // End of variables declaration//GEN-END:variables
 }

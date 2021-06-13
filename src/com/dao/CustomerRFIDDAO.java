@@ -51,6 +51,88 @@ public class CustomerRFIDDAO {
         return success;
     }
     
+    public boolean updateRFID(int id, String rfidNumber){
+        conn = new DatabaseConnection().getConnection();
+        
+        sql = "UPDATE customer_rfid SET rfid_number=? WHERE id=?";   
+        boolean success = false;
+        
+        try {
+            pst = conn.prepareStatement(sql);
+            pst.setString(1, rfidNumber);
+            pst.setInt(2, id);
+            
+            int rows = pst.executeUpdate();
+            
+            if(rows == 1){
+                success = true;
+            }else{
+                throw new SQLException("Delete in Product failed, no rows affected.");
+            }
+            
+            conn.close();        
+                    
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+        
+        return success;
+    }
+    
+    public boolean deleteRFID(int id){
+        conn = new DatabaseConnection().getConnection();
+        
+        sql = "UPDATE customer_rfid SET rfid_number=? WHERE id=?";   
+        boolean success = false;
+        
+        try {
+            pst = conn.prepareStatement(sql);
+            pst.setString(1, "none");
+            pst.setInt(2, id);
+            
+            int rows = pst.executeUpdate();
+            
+            if(rows == 1){
+                success = true;
+            }else{
+                throw new SQLException("Delete in failed, no rows affected.");
+            }
+            
+            conn.close();        
+                    
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+        
+        return success;
+    }
+    
+    public boolean checkRFIDExisted(String rfid){
+        conn = new DatabaseConnection().getConnection();
+        
+        sql = "SELECT * FROM customer_rfid WHERE rfid_number=?";   
+        boolean success = false;
+        
+        try {
+            pst = conn.prepareStatement(sql);
+            pst.setString(1, rfid);
+            
+            rs = pst.executeQuery();
+            
+            if(rs.next() == true){
+                success = true;
+            }else{
+                success = false;
+            }
+
+            conn.close();        
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+        
+        return success;
+    }
+    
     public boolean delete(int id){
         conn = new DatabaseConnection().getConnection();
         

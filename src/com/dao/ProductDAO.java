@@ -24,6 +24,29 @@ public class ProductDAO {
     public PreparedStatement pst = null;
     public ResultSet rs = null;
     
+    public List<Object> getBarcodeProductInfo(String barcode){
+        List<Object> getUsersInfo =  new ArrayList<>();
+        
+         conn = new DatabaseConnection().getConnection();
+         sql = "SELECT * FROM product WHERE barcode=?";
+         
+         try {
+             pst = conn.prepareStatement(sql);
+             pst.setString(1, barcode);      
+             rs = pst.executeQuery();
+            
+            while(rs.next()){
+                getUsersInfo.add(rs.getString("barcode"));
+                getUsersInfo.add(rs.getString("product_name"));
+                getUsersInfo.add(rs.getString("selling_price"));      
+                getUsersInfo.add(rs.getString("points")); 
+            }    
+        } catch (Exception e) {
+              JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+        return getUsersInfo;
+    }
+    
     public List<Object> getProductInfo(int id){
         List<Object> getUsersInfo =  new ArrayList<>();
         
@@ -201,6 +224,30 @@ public class ProductDAO {
         }
         
         return success;
+    }
+    
+    public int getStocks(String barcode){
+          conn = new DatabaseConnection().getConnection();
+          sql = "SELECT ps.quantity FROM "
+                  + "product AS p "
+                  + "INNER JOIN product_stock AS ps "
+                  + "ON p.id = ps.id "
+                  + "WHERE barcode = ?";
+          int stocks = 0;
+          try {
+            pst = conn.prepareStatement(sql);
+            pst.setString(1, barcode);
+         
+            rs = pst.executeQuery();
+            
+            while(rs.next()){
+                stocks = rs.getInt("quantity");
+            }
+        } catch (Exception e) {
+              JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+        
+        return stocks;
     }
     
     public int autoNumber(){

@@ -67,11 +67,6 @@ public final class ManagerFrame extends javax.swing.JFrame {
         showInternalFrame(usersInternalFrame);
     }
     
-     public void showCustomersInternalFrame(){
-        CustomerInternalFrame customerInternalFrame = CustomerInternalFrame.getInstance(this);
-        showInternalFrame(customerInternalFrame);
-    }
-    
     public void genderIcon(){
         try {
             if(gender == false){
@@ -108,7 +103,7 @@ public final class ManagerFrame extends javax.swing.JFrame {
         }
     }
     
-     private void setIconImage() {
+    private void setIconImage() {
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resources/Icon-20.png")));
     }
     
@@ -138,7 +133,6 @@ public final class ManagerFrame extends javax.swing.JFrame {
         btnLogout = new rojerusan.RSButtonIconI();
         btnProduct = new rojerusan.RSButtonIconI();
         btnReport = new rojerusan.RSButtonIconI();
-        btnCustomer = new rojerusan.RSButtonIconI();
         btnReward = new rojerusan.RSButtonIconI();
         btnHistory = new rojerusan.RSButtonIconI();
         lbUserType = new javax.swing.JLabel();
@@ -158,7 +152,9 @@ public final class ManagerFrame extends javax.swing.JFrame {
         jMenu3.setText("jMenu3");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Manager Frame");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowActivated(java.awt.event.WindowEvent evt) {
                 formWindowActivated(evt);
@@ -178,7 +174,7 @@ public final class ManagerFrame extends javax.swing.JFrame {
                 btnUsersActionPerformed(evt);
             }
         });
-        jPanel1.add(btnUsers, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 630, 200, 50));
+        jPanel1.add(btnUsers, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 590, 200, 50));
 
         btnHome.setBackground(new java.awt.Color(0, 102, 102));
         btnHome.setForeground(new java.awt.Color(51, 51, 51));
@@ -223,18 +219,7 @@ public final class ManagerFrame extends javax.swing.JFrame {
                 btnReportActionPerformed(evt);
             }
         });
-        jPanel1.add(btnReport, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 480, 200, 50));
-
-        btnCustomer.setBackground(new java.awt.Color(0, 102, 102));
-        btnCustomer.setForeground(new java.awt.Color(51, 51, 51));
-        btnCustomer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/customer.png"))); // NOI18N
-        btnCustomer.setText("Customers");
-        btnCustomer.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCustomerActionPerformed(evt);
-            }
-        });
-        jPanel1.add(btnCustomer, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 340, 200, 50));
+        jPanel1.add(btnReport, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 420, 200, 50));
 
         btnReward.setBackground(new java.awt.Color(0, 102, 102));
         btnReward.setForeground(new java.awt.Color(51, 51, 51));
@@ -245,7 +230,7 @@ public final class ManagerFrame extends javax.swing.JFrame {
                 btnRewardActionPerformed(evt);
             }
         });
-        jPanel1.add(btnReward, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 410, 200, 50));
+        jPanel1.add(btnReward, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 350, 200, 50));
 
         btnHistory.setBackground(new java.awt.Color(0, 102, 102));
         btnHistory.setForeground(new java.awt.Color(51, 51, 51));
@@ -256,7 +241,7 @@ public final class ManagerFrame extends javax.swing.JFrame {
                 btnHistoryActionPerformed(evt);
             }
         });
-        jPanel1.add(btnHistory, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 560, 200, 50));
+        jPanel1.add(btnHistory, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 500, 200, 50));
 
         lbUserType.setFont(new java.awt.Font("Verdana", 1, 24)); // NOI18N
         lbUserType.setForeground(new java.awt.Color(255, 255, 255));
@@ -427,10 +412,6 @@ public final class ManagerFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnReportActionPerformed
 
-    private void btnCustomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCustomerActionPerformed
-        showCustomersInternalFrame();
-    }//GEN-LAST:event_btnCustomerActionPerformed
-
     private void btnRewardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRewardActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnRewardActionPerformed
@@ -476,7 +457,6 @@ public final class ManagerFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private rojerusan.RSButtonIconI btnCustomer;
     private rojerusan.RSButtonIconI btnHistory;
     private rojerusan.RSButtonIconI btnHome;
     private rojerusan.RSButtonIconI btnLogout;

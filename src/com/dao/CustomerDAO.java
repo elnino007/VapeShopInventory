@@ -51,6 +51,32 @@ public class CustomerDAO {
         return getUsersInfo;
     }
     
+    public List<Object> getCustomerCardInfo(String card){
+        List<Object> getUsersInfo =  new ArrayList<>();
+        
+         conn = new DatabaseConnection().getConnection();
+         sql = "SELECT c.last_name, "
+                 + "cr.rfid_number FROM customer AS c "
+                 + "INNER JOIN customer_rfid AS cr "
+                 + "ON c.id = cr.id "
+                 + "WHERE cr.rfid_number = ?";
+         
+         try {
+             pst = conn.prepareStatement(sql);
+             pst.setString(1, card);      
+             rs = pst.executeQuery();
+            
+            while(rs.next()){
+                getUsersInfo.add(rs.getString("last_name"));
+                getUsersInfo.add(rs.getString("rfid_number"));
+         
+            }    
+        } catch (Exception e) {
+              JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+        return getUsersInfo;
+    }
+    
     public boolean create(List<Object> columnValues){
         conn = new DatabaseConnection().getConnection();
         
@@ -106,7 +132,7 @@ public class CustomerDAO {
             pst.setString(3, columnValues.get(3).toString());
             pst.setInt(4, Integer.parseInt(columnValues.get(4).toString()));
             pst.setBoolean(5, Boolean.parseBoolean(columnValues.get(5).toString()));
-            pst.setString(6, columnValues.get(5).toString());
+            pst.setString(6, columnValues.get(6).toString());
             pst.setString(7, columnValues.get(7).toString());
             pst.setInt(8, Integer.parseInt(columnValues.get(0).toString()));
  

@@ -14,6 +14,7 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.border.TitledBorder;
@@ -24,8 +25,7 @@ import javax.swing.border.TitledBorder;
  */
 public class AddEditCustomerDialog extends javax.swing.JDialog {
 
-    private CustomerInternalFrame customerInternalFrame;
-    private ManagerFrame managerFrame;
+    private CustomerJDialog customerJDialog;
     final private CustomerDAO customerDAO = new CustomerDAO();
     final private CustomerRFIDDAO customerRFIDDAO = new CustomerRFIDDAO();
     private String type;
@@ -43,7 +43,7 @@ public class AddEditCustomerDialog extends javax.swing.JDialog {
         this.id = id;
         this.type = type;
         
-        this.customerInternalFrame = (CustomerInternalFrame) (JInternalFrame) container;
+        this.customerJDialog = (CustomerJDialog) container;
         
         Toolkit toolkit = getToolkit();
         Dimension size = toolkit.getScreenSize();
@@ -138,12 +138,11 @@ public class AddEditCustomerDialog extends javax.swing.JDialog {
     
     public void addCustomers(){
         boolean success = customerDAO.create(getTextField());
-        
+        customerRFIDDAO.create(getTextField());
         if(success){
             JOptionPane.showMessageDialog(null, "Successfully created.");
-            customerRFIDDAO.create(getTextField());
-            customerInternalFrame.updateTableCustomer();
-            customerInternalFrame.updateTableRFID();
+            customerJDialog.updateTableCustomer();
+            customerJDialog.updateTableRFID();
         }
         
         dispose();
@@ -154,8 +153,7 @@ public class AddEditCustomerDialog extends javax.swing.JDialog {
         
         if(success){
             JOptionPane.showMessageDialog(null, "Successfully updated.");
-            customerRFIDDAO.create(getTextField());
-            customerInternalFrame.updateTableCustomer();
+            customerJDialog.updateTableCustomer();
         }
         
         dispose();

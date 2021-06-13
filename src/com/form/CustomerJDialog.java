@@ -11,37 +11,33 @@ import com.utils.CustomDBUtils;
 import com.utils.TableHelper;
 import java.sql.ResultSet;
 import javax.swing.JOptionPane;
-import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.TableModel;
 
 /**
  *
  * @author shaitozen
  */
-public class CustomerInternalFrame extends javax.swing.JInternalFrame {
+public class CustomerJDialog extends javax.swing.JDialog {
 
-    private final ManagerFrame managerFrame;
+    private CashierFrame cashierFrame;
     final private CustomerDAO customerDAO = new CustomerDAO();
     final private CustomerRFIDDAO customerRFIDDAO = new CustomerRFIDDAO();
     private ResultSet rs = null;
     
-    public CustomerInternalFrame(ManagerFrame managerFrame) {
-        initComponents();
-        
-        this.managerFrame = managerFrame;
-        
-        this.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        BasicInternalFrameUI bui = (BasicInternalFrameUI) this.getUI();
-        bui.setNorthPane(null);
+    public CustomerJDialog(java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
+        initComponents();      
     }
     
-    private static CustomerInternalFrame myInstance;
-    public static CustomerInternalFrame getInstance(ManagerFrame managerFrame){
-        if(myInstance == null){
-            myInstance = new CustomerInternalFrame(managerFrame);
-        }
+    public CustomerJDialog(java.awt.Frame parent, boolean modal, CashierFrame cashierFrame) {
+        super(parent, modal);
+        initComponents();
         
-        return myInstance;
+         this.cashierFrame = cashierFrame;
+         
+        updateTableRFID();
+        updateTableCustomer();
+         
     }
     
     public void updateTableCustomer(){
@@ -67,6 +63,13 @@ public class CustomerInternalFrame extends javax.swing.JInternalFrame {
        tblCustomer.clearSelection();
     }
     
+    private void clearForRFID(){
+       btnAddRFID.setEnabled(false);
+       btnEditRFID.setEnabled(false);
+       btnDeleteRFID.setEnabled(false);
+       tblRFID.clearSelection();
+    }
+    
     public void setButtonForCustomer() {
         try {
             int row = tblCustomer.getSelectedRow();
@@ -87,17 +90,30 @@ public class CustomerInternalFrame extends javax.swing.JInternalFrame {
         }
     }
     
-//    public void deleteProduct(int id){
-//        
-//        boolean success = productDAO.delete(id);
-//        
-//        if(success){
-//            JOptionPane.showMessageDialog(null, "Successfully deleted.");
-//            productStockDAO.delete(id);
-//            updateTableProduct();
-//            updateTableStock();
-//        }   
-//    }
+    public void setButtonForRFID() {
+        try {
+            int row = tblRFID.getSelectedRow();
+            TableModel model = tblRFID.getModel();
+            
+            String rfidValidate = model.getValueAt(row, 2).toString();
+            if(rfidValidate.equals("none")){
+                 btnAddRFID.setEnabled(true);
+                 btnEditRFID.setEnabled(false);
+            } else {
+                 btnAddRFID.setEnabled(false);
+                 btnEditRFID.setEnabled(true);
+            }
+            
+            if (row == -1){         
+               btnDeleteRFID.setEnabled(false);         
+            }else{         
+               btnDeleteRFID.setEnabled(true);         
+            }
+        
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, e);
+        }
+    }
     
     public void deleteCustomer(int id) {
         
@@ -111,15 +127,57 @@ public class CustomerInternalFrame extends javax.swing.JInternalFrame {
         }
     }
     
-    public int getSelectedIDForProduct(){
+    public void deleteCustomerRFID(int id) {
+        
+        boolean success = customerDAO.delete(id);
+        
+        if(success) {
+            JOptionPane.showMessageDialog(null, "Successfully deleted.");
+            customerRFIDDAO.delete(id);
+            updateTableCustomer();
+            updateTableRFID();
+        }
+    }
+    
+    public void deleteRFID(int id) {
+        
+        boolean success = customerRFIDDAO.deleteRFID(id);
+        
+        if(success) {
+            JOptionPane.showMessageDialog(null, "Successfully deleted.");
+            updateTableRFID();
+        }
+    }
+    
+    public int getSelectedIDForCustomer(){
           int row = tblCustomer.getSelectedRow();
           TableModel model = tblCustomer.getModel();
           
-          int productId = Integer.parseInt(model.getValueAt(row, 0).toString());
+          int customerID = Integer.parseInt(model.getValueAt(row, 0).toString());
        
-          return productId;
+          return customerID;
         
     } 
+    
+    public int getSelectedIDForRFID(){
+          int row = tblRFID.getSelectedRow();
+          TableModel model = tblRFID.getModel();
+          
+          int rfidNumber = Integer.parseInt(model.getValueAt(row, 0).toString());
+       
+          return rfidNumber;
+        
+    } 
+    
+    public String getSelectedFullNameForRFID(){
+          int row = tblRFID.getSelectedRow();
+          TableModel model = tblRFID.getModel();
+          
+          String fullname = model.getValueAt(row, 1).toString();
+       
+          return fullname;
+        
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -151,10 +209,10 @@ public class CustomerInternalFrame extends javax.swing.JInternalFrame {
         jLabel3 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jToolBar3 = new javax.swing.JToolBar();
-        btnNewStock = new javax.swing.JButton();
-        btnEditStock = new javax.swing.JButton();
-        btnDeleteStock = new javax.swing.JButton();
-        btnClearStock = new javax.swing.JButton();
+        btnAddRFID = new javax.swing.JButton();
+        btnEditRFID = new javax.swing.JButton();
+        btnDeleteRFID = new javax.swing.JButton();
+        btnClearRFID = new javax.swing.JButton();
         btnInfoStock = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblRFID = new javax.swing.JTable();
@@ -163,24 +221,7 @@ public class CustomerInternalFrame extends javax.swing.JInternalFrame {
         txtSearch = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
 
-        setTitle("Customers");
-        addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
-            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
-                formInternalFrameActivated(evt);
-            }
-            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
-            }
-            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
-            }
-            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
-            }
-            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
-            }
-            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
-            }
-            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
-            }
-        });
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel5.setBackground(new java.awt.Color(185, 221, 217));
 
@@ -390,55 +431,56 @@ public class CustomerInternalFrame extends javax.swing.JInternalFrame {
         jToolBar3.setFloatable(false);
         jToolBar3.setRollover(true);
 
-        btnNewStock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/add.png"))); // NOI18N
-        btnNewStock.setText("Add");
-        btnNewStock.setFocusable(false);
-        btnNewStock.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnNewStock.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnNewStock.addActionListener(new java.awt.event.ActionListener() {
+        btnAddRFID.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/add.png"))); // NOI18N
+        btnAddRFID.setText("Add");
+        btnAddRFID.setEnabled(false);
+        btnAddRFID.setFocusable(false);
+        btnAddRFID.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnAddRFID.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAddRFID.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNewStockActionPerformed(evt);
+                btnAddRFIDActionPerformed(evt);
             }
         });
-        jToolBar3.add(btnNewStock);
+        jToolBar3.add(btnAddRFID);
 
-        btnEditStock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/edit.png"))); // NOI18N
-        btnEditStock.setText("Edit");
-        btnEditStock.setEnabled(false);
-        btnEditStock.setFocusable(false);
-        btnEditStock.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnEditStock.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnEditStock.addActionListener(new java.awt.event.ActionListener() {
+        btnEditRFID.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/edit.png"))); // NOI18N
+        btnEditRFID.setText("Re-Issue");
+        btnEditRFID.setEnabled(false);
+        btnEditRFID.setFocusable(false);
+        btnEditRFID.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnEditRFID.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnEditRFID.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEditStockActionPerformed(evt);
+                btnEditRFIDActionPerformed(evt);
             }
         });
-        jToolBar3.add(btnEditStock);
+        jToolBar3.add(btnEditRFID);
 
-        btnDeleteStock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/delete_16x.png"))); // NOI18N
-        btnDeleteStock.setText("Delete");
-        btnDeleteStock.setEnabled(false);
-        btnDeleteStock.setFocusable(false);
-        btnDeleteStock.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnDeleteStock.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnDeleteStock.addActionListener(new java.awt.event.ActionListener() {
+        btnDeleteRFID.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/delete_16x.png"))); // NOI18N
+        btnDeleteRFID.setText("Delete");
+        btnDeleteRFID.setEnabled(false);
+        btnDeleteRFID.setFocusable(false);
+        btnDeleteRFID.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnDeleteRFID.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnDeleteRFID.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteStockActionPerformed(evt);
+                btnDeleteRFIDActionPerformed(evt);
             }
         });
-        jToolBar3.add(btnDeleteStock);
+        jToolBar3.add(btnDeleteRFID);
 
-        btnClearStock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/delete.png"))); // NOI18N
-        btnClearStock.setText("Clear");
-        btnClearStock.setFocusable(false);
-        btnClearStock.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnClearStock.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnClearStock.addActionListener(new java.awt.event.ActionListener() {
+        btnClearRFID.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/delete.png"))); // NOI18N
+        btnClearRFID.setText("Clear");
+        btnClearRFID.setFocusable(false);
+        btnClearRFID.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnClearRFID.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnClearRFID.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnClearStockActionPerformed(evt);
+                btnClearRFIDActionPerformed(evt);
             }
         });
-        jToolBar3.add(btnClearStock);
+        jToolBar3.add(btnClearRFID);
 
         btnInfoStock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/info.png"))); // NOI18N
         btnInfoStock.setText("Info");
@@ -565,11 +607,11 @@ public class CustomerInternalFrame extends javax.swing.JInternalFrame {
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1150, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 945, Short.MAX_VALUE)
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 671, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -584,34 +626,37 @@ public class CustomerInternalFrame extends javax.swing.JInternalFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNewCustomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewCustomerActionPerformed
-        AddEditCustomerDialog addEditCustomerDialog = new 
-        AddEditCustomerDialog(managerFrame, this, true, customerDAO.autoNumber(), "New");
-        addEditCustomerDialog.setVisible(true);     
+        AddEditCustomerDialog addEditCustomerDialog = new
+        AddEditCustomerDialog(cashierFrame, this, true, customerDAO.autoNumber(), "New");
+        addEditCustomerDialog.setVisible(true);
+        
+        
     }//GEN-LAST:event_btnNewCustomerActionPerformed
 
     private void btnEditCustomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditCustomerActionPerformed
-        AddEditCustomerDialog addEditCustomerDialog = new 
-        AddEditCustomerDialog(managerFrame, this, true, getSelectedIDForProduct(), "Update");
-        addEditCustomerDialog.setVisible(true);  
-        
+        AddEditCustomerDialog addEditCustomerDialog = new
+        AddEditCustomerDialog(cashierFrame, this, true, getSelectedIDForCustomer(), "Update");
+        addEditCustomerDialog.setVisible(true);
+
         clearForCustomer();
     }//GEN-LAST:event_btnEditCustomerActionPerformed
 
     private void btnDeleteCustomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteCustomerActionPerformed
-        int input = JOptionPane.showConfirmDialog(null, 
-                        "Are you sure do you want to delete this customer?", 
-                        "Warning", 
-                        JOptionPane.YES_NO_OPTION, 
-                        JOptionPane.WARNING_MESSAGE);
-                        if(input == 0) {
-                            int id = getSelectedIDForProduct();
-                            setButtonForCustomer();
-                            deleteCustomer(id);
-                            clearForCustomer();
-                        }
+        int input = JOptionPane.showConfirmDialog(null,
+            "Are you sure do you want to delete this customer?",
+            "Warning",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE);
+        if(input == 0) {
+            int id = getSelectedIDForCustomer();
+            setButtonForCustomer();
+            deleteCustomer(id);
+            clearForCustomer();
+        }
     }//GEN-LAST:event_btnDeleteCustomerActionPerformed
 
     private void btnClearCustomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearCustomerActionPerformed
@@ -642,29 +687,48 @@ public class CustomerInternalFrame extends javax.swing.JInternalFrame {
         setButtonForCustomer();
     }//GEN-LAST:event_tblCustomerMouseReleased
 
-    private void btnNewStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewStockActionPerformed
-  
+    private void btnAddRFIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddRFIDActionPerformed
+        AddEditRFIDDiaglog addEditRFIDDiaglog = new
+        AddEditRFIDDiaglog(cashierFrame, this, true, getSelectedIDForRFID(), "New");
+        addEditRFIDDiaglog.txtCustomerID.setText(String.valueOf(getSelectedIDForRFID()));
+        addEditRFIDDiaglog.txtFullName.setText(getSelectedFullNameForRFID());
+        addEditRFIDDiaglog.setVisible(true);
+        clearForRFID();
+    }//GEN-LAST:event_btnAddRFIDActionPerformed
 
-    }//GEN-LAST:event_btnNewStockActionPerformed
+    private void btnEditRFIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditRFIDActionPerformed
+        AddEditRFIDDiaglog addEditRFIDDiaglog = new
+        AddEditRFIDDiaglog(cashierFrame, this, true, getSelectedIDForRFID(), "Updated");
+        addEditRFIDDiaglog.txtCustomerID.setText(String.valueOf(getSelectedIDForRFID()));
+        addEditRFIDDiaglog.txtFullName.setText(getSelectedFullNameForRFID());
+        addEditRFIDDiaglog.setVisible(true);
+        clearForRFID();
+    }//GEN-LAST:event_btnEditRFIDActionPerformed
 
-    private void btnEditStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditStockActionPerformed
+    private void btnDeleteRFIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteRFIDActionPerformed
+        int input = JOptionPane.showConfirmDialog(null,
+            "Are you sure do you want to delete this customer?",
+            "Warning",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE);
+        if(input == 0) {
+            int id = getSelectedIDForRFID();
+            setButtonForRFID();
+            deleteRFID(id);
+            clearForRFID();
+        }
+    }//GEN-LAST:event_btnDeleteRFIDActionPerformed
 
-    }//GEN-LAST:event_btnEditStockActionPerformed
-
-    private void btnDeleteStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteStockActionPerformed
-     
-    }//GEN-LAST:event_btnDeleteStockActionPerformed
-
-    private void btnClearStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearStockActionPerformed
-   
-    }//GEN-LAST:event_btnClearStockActionPerformed
+    private void btnClearRFIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearRFIDActionPerformed
+        clearForRFID();
+    }//GEN-LAST:event_btnClearRFIDActionPerformed
 
     private void btnInfoStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInfoStockActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnInfoStockActionPerformed
 
     private void tblRFIDMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblRFIDMouseReleased
-
+        setButtonForRFID();
     }//GEN-LAST:event_tblRFIDMouseReleased
 
     private void cmbSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbSearchActionPerformed
@@ -683,23 +747,59 @@ public class CustomerInternalFrame extends javax.swing.JInternalFrame {
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void formInternalFrameActivated(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameActivated
-         updateTableCustomer();
-         updateTableRFID();
-    }//GEN-LAST:event_formInternalFrameActivated
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(CustomerJDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(CustomerJDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(CustomerJDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(CustomerJDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
 
+        /* Create and display the dialog */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                CustomerJDialog dialog = new CustomerJDialog(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddRFID;
     private javax.swing.JButton btnClearCustomer;
-    private javax.swing.JButton btnClearStock;
+    private javax.swing.JButton btnClearRFID;
     private javax.swing.JButton btnDeleteCustomer;
-    private javax.swing.JButton btnDeleteStock;
+    private javax.swing.JButton btnDeleteRFID;
     private javax.swing.JButton btnEditCustomer;
-    private javax.swing.JButton btnEditStock;
+    private javax.swing.JButton btnEditRFID;
     private javax.swing.JButton btnInfoCustomer;
     private javax.swing.JButton btnInfoStock;
     private javax.swing.JButton btnNewCustomer;
-    private javax.swing.JButton btnNewStock;
     private javax.swing.JComboBox<String> cmbSearch;
     private javax.swing.JComboBox<String> cmbSearch1;
     private javax.swing.JButton jButton1;
