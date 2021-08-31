@@ -105,8 +105,6 @@ public class ProductStockDAO {
     }
     
     public boolean update(List<Object> columnValues){
-//        int quantityTotal = getQuantityStock(Integer.parseInt(columnValues.get(0).toString())) +
-//        Integer.parseInt(columnValues.get(1).toString());
         
         conn = new DatabaseConnection().getConnection();
         
@@ -118,6 +116,58 @@ public class ProductStockDAO {
             pst = conn.prepareStatement(sql);
             pst.setInt(1, Integer.parseInt(columnValues.get(1).toString()));
             pst.setInt(2, Integer.parseInt(columnValues.get(0).toString()));
+            
+            int rows = pst.executeUpdate();
+            
+            if(rows == 1){
+                success = true;
+            }else{
+                throw new SQLException("Add in Stocks failed, no rows affected.");
+            }
+            
+            conn.close();        
+                    
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+
+        return success;
+    }
+    
+     public int getQuantityByBarcode(String barcode){
+        
+        conn = new DatabaseConnection().getConnection();
+        sql = "SELECT ps.quantity FROM product AS p INNER JOIN "
+                + "product_stock AS ps ON p.id = ps.id WHERE p.barcode = ?";
+        int quantityStock = 0;
+        try {
+            pst = conn.prepareStatement(sql);
+            pst.setString(1, barcode);
+            rs = pst.executeQuery();
+            
+            while(rs.next()){
+                quantityStock = rs.getInt("quantity");
+            }
+        } catch (SQLException e) {
+              JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+        
+        return quantityStock;
+    }
+    
+    public boolean updateStockAfterPay(String barcode, int qtyTotal){
+        
+        conn = new DatabaseConnection().getConnection();
+        
+        sql = "UPDATE product_stock AS ps INNER JOIN product AS p "
+                + "ON ps.id = p.id SET ps.quantity = ? WHERE p.barcode = ?";   
+        boolean success = false;
+
+       
+        try {
+            pst = conn.prepareStatement(sql);
+            pst.setInt(1, qtyTotal);
+            pst.setString(2, barcode);
             
             int rows = pst.executeUpdate();
             

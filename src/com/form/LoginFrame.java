@@ -37,7 +37,7 @@ public class LoginFrame extends javax.swing.JFrame {
     private java.sql.Connection conn;
     final private String DRIVER = "com.mysql.jdbc.Driver";
     final private String USER = "root";
-    final private String PASSWORD = "";
+    final private String PASSWORD = "pogisiato";
     final private String URL = "jdbc:mysql://localhost:3306/";
     final private String DATABASE = "vapeshop";
     public String query;
@@ -384,8 +384,13 @@ public class LoginFrame extends javax.swing.JFrame {
                 String userType = rs.getString("user_type");
                 
                 if(rs.getString("user_type").equals("Cashier")) {
-                    new CashierFrame().setVisible(true);
-                this.setVisible(false);
+                    
+                    CashierFrame cashierFrame = new CashierFrame();
+                    cashierFrame.lbLastname.setText("Name: " + rs.getString("last_name"));
+                    cashierFrame.setCashierName(rs.getString("last_name"));
+                    cashierFrame.setUsername(rs.getString("username"));
+                    cashierFrame.setVisible(true);
+                    dispose();
                 }
       
                 else  if(userType.equals("Owner") || userType.equals("Manager")){
@@ -398,7 +403,7 @@ public class LoginFrame extends javax.swing.JFrame {
                     managerFrame.genderIcon();
                     
                     managerFrame.setVisible(true);
-                this.setVisible(false);
+                    dispose();
                 }
             } else {
                lbPasswordError.setVisible(true);
@@ -415,37 +420,7 @@ public class LoginFrame extends javax.swing.JFrame {
             
         } catch (Exception e) {
         }
-        
-//        try {
-//            Class.forName(DRIVER);
-//            conn = DriverManager.getConnection(URL + DATABASE, USER, PASSWORD);
-//            query = "SELECT * FROM user_management WHERE username=? and password = ?";
-//            PreparedStatement pst = conn.prepareStatement(query);
-//            pst.setString(1, txtUsername.getText());
-//            pst.setString(2, txtPassword.getText());
-//            ResultSet rs = pst.executeQuery();
-//            if(rs.next()){
-//                lbPasswordError.setVisible(false);
-//                if(rs.getString("user_type").equals("cashier")) {
-//                    new CashierFrame().setVisible(true);
-//                this.setVisible(false);
-//                }else  if(rs.getString("user_type").equals("Admin")){
-//                 
-//                    ManagerFrame managerFrame = new ManagerFrame();
-//                    managerFrame.gender = rs.getBoolean("gender");
-//                    managerFrame.genderIcon();
-//                    
-//                    managerFrame.setVisible(true);
-//                this.setVisible(false);
-//                }
-//            } else {
-//               lbPasswordError.setVisible(true);
-//            }
-//            conn.close();
-//             
-//        } catch (Exception e) {
-//        }
-        
+             
     }//GEN-LAST:event_btnLoginActionPerformed
 
     /**

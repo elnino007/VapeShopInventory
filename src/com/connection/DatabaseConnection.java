@@ -10,7 +10,7 @@ public class DatabaseConnection {
     private Connection conn;
     final private String DRIVER = "com.mysql.jdbc.Driver";
     final private String USER = "root";
-    final private String PASSWORD = "";
+    final private String PASSWORD = "pogisiato";
     final private String URL = "jdbc:mysql://localhost:3306/";
     final private String DATABASE = "vapeshop";
     

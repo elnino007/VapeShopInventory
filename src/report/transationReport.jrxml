@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="963a5767-550e-4f34-ae71-15e6844cddb4">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="DATEFROM" class="java.lang.String"/>
+	<parameter name="DATETO" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT p.product_name, SUM(tb.quantity) AS quantity, SUM(tb.total_amount) AS total_amount FROM product AS p INNER JOIN transaction_tbl AS tb ON p.barcode = tb.barcode]]>
+	</queryString>
+	<field name="product_name" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="quantity" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="total_amount" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="103" splitType="Stretch">
+			<textField>
+				<reportElement x="217" y="83" width="100" height="20" uuid="8ff46172-4d73-4265-ba2d-3f177a4bf6e7"/>
+				<textFieldExpression><![CDATA[$P{DATETO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="11" y="83" width="69" height="20" uuid="0be4b136-86c8-49ac-bc30-103018c25826"/>
+				<text><![CDATA[Date Range:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="87" y="83" width="100" height="20" uuid="386ffab3-991f-4de4-a9cd-9133123529c5"/>
+				<textFieldExpression><![CDATA[$P{DATEFROM}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="187" y="83" width="30" height="20" uuid="9a04310b-66b0-4890-85fa-a535e41ef99d"/>
+				<text><![CDATA[~~~]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="187" y="0" width="58" height="20" uuid="fb341c35-da9c-489e-8656-4a414e233afb"/>
+				<text><![CDATA[Date today :]]></text>
+			</staticText>
+			<textField pattern="MM/dd/yyyy">
+				<reportElement x="245" y="0" width="100" height="20" uuid="db58694b-10f4-4218-bf3c-c009be6c84fe"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="87" y="0" width="100" height="20" uuid="4a942350-854e-470c-9483-9ff45b7f148d"/>
+				<text><![CDATA[Product Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="211" y="0" width="100" height="20" uuid="613ed073-22a3-4a5a-88f2-7ffa36972a16"/>
+				<text><![CDATA[Quantity]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="339" y="0" width="100" height="20" uuid="b91f66e8-6082-4dcc-808b-40574a219bf4"/>
+				<text><![CDATA[Total Amount]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="31" splitType="Stretch">
+			<textField>
+				<reportElement x="87" y="0" width="100" height="20" uuid="0033c476-90fc-4965-9829-c8a3973a6a98"/>
+				<textFieldExpression><![CDATA[$F{product_name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="211" y="0" width="100" height="20" uuid="a7105c2f-5c97-4a6b-9202-dc216af0a62e"/>
+				<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="339" y="0" width="100" height="20" uuid="d5c8120e-cb1c-4776-9340-8ff224bf2a5a"/>
+				<textFieldExpression><![CDATA[$F{total_amount}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

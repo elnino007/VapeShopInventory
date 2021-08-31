@@ -6,6 +6,7 @@
 package com.form;
 
 import com.dao.CustomerDAO;
+import com.dao.CustomerPointsDAO;
 import com.dao.CustomerRFIDDAO;
 import com.utils.CustomDBUtils;
 import com.utils.TableHelper;
@@ -22,6 +23,7 @@ public class CustomerJDialog extends javax.swing.JDialog {
     private CashierFrame cashierFrame;
     final private CustomerDAO customerDAO = new CustomerDAO();
     final private CustomerRFIDDAO customerRFIDDAO = new CustomerRFIDDAO();
+    final private CustomerPointsDAO customerPointsDAO = new CustomerPointsDAO();
     private ResultSet rs = null;
     
     public CustomerJDialog(java.awt.Frame parent, boolean modal) {
@@ -37,7 +39,17 @@ public class CustomerJDialog extends javax.swing.JDialog {
          
         updateTableRFID();
         updateTableCustomer();
-         
+        updateTablePoints(); 
+     
+        jTabbedPane1.remove(2);
+       
+    }
+    
+    public void updateTablePoints(){
+        rs = customerPointsDAO.readAllSortByID();
+        tblPoints.setModel(CustomDBUtils.resultSetToTableModel(rs));
+        
+           TableHelper.renderHeader(tblPoints, "Customer ID", "Points");
     }
     
     public void updateTableCustomer(){
@@ -122,8 +134,10 @@ public class CustomerJDialog extends javax.swing.JDialog {
         if(success) {
             JOptionPane.showMessageDialog(null, "Successfully deleted.");
             customerRFIDDAO.delete(id);
+            customerPointsDAO.delete(id);
             updateTableCustomer();
             updateTableRFID();
+            updateTablePoints();
         }
     }
     
@@ -136,6 +150,7 @@ public class CustomerJDialog extends javax.swing.JDialog {
             customerRFIDDAO.delete(id);
             updateTableCustomer();
             updateTableRFID();
+            updateTablePoints();
         }
     }
     
@@ -198,7 +213,6 @@ public class CustomerJDialog extends javax.swing.JDialog {
         btnEditCustomer = new javax.swing.JButton();
         btnDeleteCustomer = new javax.swing.JButton();
         btnClearCustomer = new javax.swing.JButton();
-        btnInfoCustomer = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         cmbSearch1 = new javax.swing.JComboBox<>();
         txtSearch1 = new javax.swing.JTextField();
@@ -213,15 +227,28 @@ public class CustomerJDialog extends javax.swing.JDialog {
         btnEditRFID = new javax.swing.JButton();
         btnDeleteRFID = new javax.swing.JButton();
         btnClearRFID = new javax.swing.JButton();
-        btnInfoStock = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblRFID = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         cmbSearch = new javax.swing.JComboBox<>();
         txtSearch = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
+        jPanel6 = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        jPanel7 = new javax.swing.JPanel();
+        jToolBar4 = new javax.swing.JToolBar();
+        btnAddPoints = new javax.swing.JButton();
+        btnEditPoints = new javax.swing.JButton();
+        btnClearRFID1 = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tblPoints = new javax.swing.JTable();
+        jLabel6 = new javax.swing.JLabel();
+        cmbSearch2 = new javax.swing.JComboBox<>();
+        txtSearch2 = new javax.swing.JTextField();
+        jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Customer Frame");
 
         jPanel5.setBackground(new java.awt.Color(185, 221, 217));
 
@@ -293,19 +320,6 @@ public class CustomerJDialog extends javax.swing.JDialog {
             }
         });
         jToolBar2.add(btnClearCustomer);
-
-        btnInfoCustomer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/info.png"))); // NOI18N
-        btnInfoCustomer.setText("Info");
-        btnInfoCustomer.setEnabled(false);
-        btnInfoCustomer.setFocusable(false);
-        btnInfoCustomer.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnInfoCustomer.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnInfoCustomer.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnInfoCustomerActionPerformed(evt);
-            }
-        });
-        jToolBar2.add(btnInfoCustomer);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -482,19 +496,6 @@ public class CustomerJDialog extends javax.swing.JDialog {
         });
         jToolBar3.add(btnClearRFID);
 
-        btnInfoStock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/info.png"))); // NOI18N
-        btnInfoStock.setText("Info");
-        btnInfoStock.setEnabled(false);
-        btnInfoStock.setFocusable(false);
-        btnInfoStock.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnInfoStock.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnInfoStock.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnInfoStockActionPerformed(evt);
-            }
-        });
-        jToolBar3.add(btnInfoStock);
-
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -603,6 +604,167 @@ public class CustomerJDialog extends javax.swing.JDialog {
 
         jTabbedPane1.addTab("RFID", jPanel2);
 
+        jPanel6.setBackground(new java.awt.Color(185, 221, 217));
+
+        jLabel5.setBackground(new java.awt.Color(0, 102, 102));
+        jLabel5.setFont(new java.awt.Font("Verdana", 1, 36)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(0, 102, 102));
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel5.setText("Customer Points Information");
+        jLabel5.setFocusable(false);
+        jLabel5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+
+        jPanel7.setBackground(new java.awt.Color(153, 204, 255));
+
+        jToolBar4.setFloatable(false);
+        jToolBar4.setRollover(true);
+
+        btnAddPoints.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/add.png"))); // NOI18N
+        btnAddPoints.setText("Add");
+        btnAddPoints.setEnabled(false);
+        btnAddPoints.setFocusable(false);
+        btnAddPoints.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnAddPoints.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAddPoints.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddPointsActionPerformed(evt);
+            }
+        });
+        jToolBar4.add(btnAddPoints);
+
+        btnEditPoints.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/edit.png"))); // NOI18N
+        btnEditPoints.setText("Edit");
+        btnEditPoints.setEnabled(false);
+        btnEditPoints.setFocusable(false);
+        btnEditPoints.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnEditPoints.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnEditPoints.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditPointsActionPerformed(evt);
+            }
+        });
+        jToolBar4.add(btnEditPoints);
+
+        btnClearRFID1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/delete.png"))); // NOI18N
+        btnClearRFID1.setText("Clear");
+        btnClearRFID1.setFocusable(false);
+        btnClearRFID1.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        btnClearRFID1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnClearRFID1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearRFID1ActionPerformed(evt);
+            }
+        });
+        jToolBar4.add(btnClearRFID1);
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jToolBar4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jToolBar4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        tblPoints.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Customer ID", "Points"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tblPoints.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tblPoints.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                tblPointsMouseReleased(evt);
+            }
+        });
+        jScrollPane3.setViewportView(tblPoints);
+
+        jLabel6.setFont(new java.awt.Font("Verdana", 0, 16)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(21, 177, 255));
+        jLabel6.setText("Search");
+
+        cmbSearch2.setFont(new java.awt.Font("Verdana", 0, 11)); // NOI18N
+        cmbSearch2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "Product ID", "Product Name", "Product Category", "Quantity" }));
+        cmbSearch2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbSearch2ActionPerformed(evt);
+            }
+        });
+
+        txtSearch2.setFont(new java.awt.Font("Verdana", 0, 11)); // NOI18N
+        txtSearch2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtSearch2ActionPerformed(evt);
+            }
+        });
+        txtSearch2.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                txtSearch2PropertyChange(evt);
+            }
+        });
+
+        jButton3.setText("Search It Baby!");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3)
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(cmbSearch2, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtSearch2, javax.swing.GroupLayout.PREFERRED_SIZE, 377, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton3)
+                .addGap(230, 230, 230))
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtSearch2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbSearch2)
+                    .addComponent(jLabel6)
+                    .addComponent(jButton3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 464, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(25, 25, 25))
+        );
+
+        jTabbedPane1.addTab("Points", jPanel6);
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -663,10 +825,6 @@ public class CustomerJDialog extends javax.swing.JDialog {
         clearForCustomer();
     }//GEN-LAST:event_btnClearCustomerActionPerformed
 
-    private void btnInfoCustomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInfoCustomerActionPerformed
-
-    }//GEN-LAST:event_btnInfoCustomerActionPerformed
-
     private void cmbSearch1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbSearch1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cmbSearch1ActionPerformed
@@ -723,10 +881,6 @@ public class CustomerJDialog extends javax.swing.JDialog {
         clearForRFID();
     }//GEN-LAST:event_btnClearRFIDActionPerformed
 
-    private void btnInfoStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInfoStockActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnInfoStockActionPerformed
-
     private void tblRFIDMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblRFIDMouseReleased
         setButtonForRFID();
     }//GEN-LAST:event_tblRFIDMouseReleased
@@ -746,6 +900,42 @@ public class CustomerJDialog extends javax.swing.JDialog {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void tblPointsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPointsMouseReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tblPointsMouseReleased
+
+    private void cmbSearch2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbSearch2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbSearch2ActionPerformed
+
+    private void txtSearch2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearch2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtSearch2ActionPerformed
+
+    private void txtSearch2PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_txtSearch2PropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtSearch2PropertyChange
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void btnClearRFID1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearRFID1ActionPerformed
+        // TODO add your handling code here:
+           JOptionPane.showMessageDialog(this, "Under Maintenance");
+    }//GEN-LAST:event_btnClearRFID1ActionPerformed
+
+    private void btnEditPointsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditPointsActionPerformed
+        // TODO add your handling code here:
+           JOptionPane.showMessageDialog(this, "Under Maintenance");
+    }//GEN-LAST:event_btnEditPointsActionPerformed
+
+    private void btnAddPointsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddPointsActionPerformed
+        // TODO add your handling code here:
+        JOptionPane.showMessageDialog(this, "Under Maintenance");
+    }//GEN-LAST:event_btnAddPointsActionPerformed
 
     /**
      * @param args the command line arguments
@@ -790,37 +980,48 @@ public class CustomerJDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddPoints;
     private javax.swing.JButton btnAddRFID;
     private javax.swing.JButton btnClearCustomer;
     private javax.swing.JButton btnClearRFID;
+    private javax.swing.JButton btnClearRFID1;
     private javax.swing.JButton btnDeleteCustomer;
     private javax.swing.JButton btnDeleteRFID;
     private javax.swing.JButton btnEditCustomer;
+    private javax.swing.JButton btnEditPoints;
     private javax.swing.JButton btnEditRFID;
-    private javax.swing.JButton btnInfoCustomer;
-    private javax.swing.JButton btnInfoStock;
     private javax.swing.JButton btnNewCustomer;
     private javax.swing.JComboBox<String> cmbSearch;
     private javax.swing.JComboBox<String> cmbSearch1;
+    private javax.swing.JComboBox<String> cmbSearch2;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JToolBar jToolBar2;
     private javax.swing.JToolBar jToolBar3;
+    private javax.swing.JToolBar jToolBar4;
     private javax.swing.JTable tblCustomer;
+    private javax.swing.JTable tblPoints;
     private javax.swing.JTable tblRFID;
     private javax.swing.JTextField txtSearch;
     private javax.swing.JTextField txtSearch1;
+    private javax.swing.JTextField txtSearch2;
     // End of variables declaration//GEN-END:variables
 }

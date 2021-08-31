@@ -25,6 +25,48 @@ public class UserDAO {
     public PreparedStatement pst = null;
     public ResultSet rs = null;
     
+    public List<String> getProductName(){
+         List<String> getUsersInfo =  new ArrayList<>();
+        
+         conn = new DatabaseConnection().getConnection();
+         sql = "SELECT product_name FROM product ORDER BY product_name";
+         
+         try {
+             pst = conn.prepareStatement(sql);
+  
+             rs = pst.executeQuery();
+            
+            while(rs.next()){
+                getUsersInfo.add(rs.getString("product_name"));                    
+            }    
+            
+        } catch (Exception e) {
+              JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+        return getUsersInfo;
+    }
+    
+    public List<String> getCashierUsername(){
+         List<String> getUsersInfo =  new ArrayList<>();
+        
+         conn = new DatabaseConnection().getConnection();
+         sql = "SELECT username FROM user_management WHERE user_type='Cashier' ORDER BY username";
+         
+         try {
+             pst = conn.prepareStatement(sql);
+  
+             rs = pst.executeQuery();
+            
+            while(rs.next()){
+                getUsersInfo.add(rs.getString("username"));                    
+            }    
+            
+        } catch (Exception e) {
+              JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+        return getUsersInfo;
+    }
+    
     public boolean checkUsernameExist(String username){
         conn = new DatabaseConnection().getConnection();
         

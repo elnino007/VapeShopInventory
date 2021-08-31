@@ -6,27 +6,53 @@
 package com.form;
 
 import com.dao.ProductDAO;
+import java.awt.TextField;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  *
  * @author shaitozen
  */
-public class POSDiaglog extends javax.swing.JDialog {
+public class POSDiaglog extends javax.swing.JFrame {
 
     
     private ProductDAO productDAO = new ProductDAO();
     private CashierFrame cashierFrame = new CashierFrame();
+    
+    public String cashierUsername;
+    public String cashierName;
+
+    public String getCashierUsername() {
+        return cashierUsername;
+    }
+
+    public void setCashierUsername(String cashierUsername) {
+        this.cashierUsername = cashierUsername;
+    }
+
+    public String getCashierName() {
+        return cashierName;
+    }
+
+    public void setCashierName(String cashierName) {
+        this.cashierName = cashierName;
+    }
+    
+    
     /**
      * Creates new form POSDiaglog
      * @param parent
      * @param modal
      */
     public POSDiaglog(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+       // super(parent, modal);
         initComponents();
         
         tblPOS.getColumnModel().getColumn(0).setPreferredWidth(150);
@@ -35,6 +61,48 @@ public class POSDiaglog extends javax.swing.JDialog {
 //        tblPOS.getColumnModel().getColumn(3).setPreferredWidth(100);
 //        tblPOS.getColumnModel().getColumn(4).setPreferredWidth(100);
         setButtonForPOS();
+        setIconImage();
+    }
+    
+    private void setIconImage() {
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/resources/Icon-20.png")));
+    }
+    
+        
+ 
+        
+    public void numberOnly(char c, TextField TextField){
+        if(Character.isLetter(c)) {
+             TextField.setEditable(false);
+         } else {
+             TextField.setEditable(true);
+         }
+    }    
+        
+    public void transactionInfo(){
+        
+        try {
+            double totalAmount = 0;
+            double vat = 0;
+            double subTotal = 0;
+            int totalPoints = 0;
+                for (int i = 0; i < tblPOS.getRowCount(); i++) {
+                    double amount = Double.parseDouble(tblPOS.getValueAt(i, 4).toString());
+                     totalAmount += amount;
+                    int points = Integer.parseInt(tblPOS.getValueAt(i, 5).toString());
+                    totalPoints += points;
+                }
+            
+            vat = totalAmount * .12;
+            subTotal = totalAmount * .88;
+            txtTotalAmount.setText(String.format("%.2f",totalAmount));
+            txtVAT.setText(String.format("%.2f",vat));
+            txtSubTotal.setText(String.format("%.2f",subTotal));
+            txtPoints.setText(String.valueOf(totalPoints));
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e);
+        }
+         
     }
     
     public void clearTxtAndButton(){
@@ -46,6 +114,31 @@ public class POSDiaglog extends javax.swing.JDialog {
         txtBarcode.requestFocus();
     }
     
+    public void clearTransaction(){
+        txtSubTotal.setText("0.00");
+        txtVAT.setText("0.00");
+        txtTotalAmount.setText("0.00");
+        txtPoints.setText("0");
+    }
+    
+    public void clearCustomerInfo(){
+        txtCustomerCard.setText("None");
+        txtCustomerName.setText("None");
+    }
+    
+    public List<Object> getPOSData(){
+        int row = tblPOS.getSelectedRow();
+        TableModel model = tblPOS.getModel();
+        
+        List<Object> columnValues = new ArrayList<>();
+        columnValues.add(model.getValueAt(row, 0).toString());
+        columnValues.add(model.getValueAt(row, 1).toString());
+        columnValues.add(model.getValueAt(row, 2).toString());
+        columnValues.add(model.getValueAt(row, 3).toString());
+        columnValues.add(productDAO.getStocks(model.getValueAt(row, 0).toString()));
+        return columnValues;
+    }
+    
     public void updatePOSTable(String barcode){
         
         if(productDAO.checkBarcodeExisted(barcode)){
@@ -53,17 +146,24 @@ public class POSDiaglog extends javax.swing.JDialog {
             boolean exists = false;
             String barcodeExisted = "";
             String qtyExisted = "";
+            int pointsExisted = Integer.parseInt(getProductInfo.get(3).toString());
             int qtyTotal = 0;
+            int pointsTotal = 0;
+            
             
             for (int i = 0; i < tblPOS.getRowCount(); i++) {
                  barcodeExisted = tblPOS.getValueAt(i, 0).toString();
                  qtyExisted = tblPOS.getValueAt(i, 2).toString();
+              
 
                  if(txtBarcode.getText().equals(barcodeExisted)){
                     qtyTotal = Integer.parseInt(qtyExisted) 
                          + Integer.parseInt(txtQty.getText());
                     Double amount = qtyTotal
                     * Double.parseDouble(getProductInfo.get(2).toString()); 
+                    pointsTotal = pointsExisted
+                         * qtyTotal;
+                    
                      
                     if(productDAO.getStocks(barcode) < qtyTotal){
                         showMessageError("Insufficient Stocks");
@@ -74,6 +174,7 @@ public class POSDiaglog extends javax.swing.JDialog {
                         DefaultTableModel model = (DefaultTableModel) tblPOS.getModel();
                         model.setValueAt(qtyTotal, i, 2);
                         model.setValueAt(amount, i, 4);
+                        model.setValueAt(pointsTotal, i, 5);
                         clearTxtAndButton();
                         exists = true;
                         break;
@@ -94,7 +195,8 @@ public class POSDiaglog extends javax.swing.JDialog {
                     getProductInfo.get(1), 
                     txtQty.getText(),
                     getProductInfo.get(2),
-                    amount});
+                    amount,
+                    pointsExisted});
 
                 clearTxtAndButton();
                 } 
@@ -103,6 +205,14 @@ public class POSDiaglog extends javax.swing.JDialog {
             showMessageError("Invalid Barcode");
             clearTxtAndButton();
         }
+    }
+    
+    public void clearButtonForPOS(){
+        btnVoid.setEnabled(false);
+        btnPayment.setEnabled(false);
+        btnQty.setEnabled(false);
+        btnVoid.setEnabled(false);
+        btnTransaction.setEnabled(false);
     }
     
     public void setButtonForPOS() {
@@ -156,16 +266,18 @@ public class POSDiaglog extends javax.swing.JDialog {
         label4 = new java.awt.Label();
         label5 = new java.awt.Label();
         txtCustomerCard = new java.awt.Label();
-        txtCustomerCard1 = new java.awt.Label();
-        txtCustomerCard2 = new java.awt.Label();
-        txtCustomerCard3 = new java.awt.Label();
+        txtSubTotal = new java.awt.Label();
+        txtVAT = new java.awt.Label();
+        txtTotalAmount = new java.awt.Label();
         label9 = new java.awt.Label();
         txtCustomerName = new java.awt.Label();
+        label10 = new java.awt.Label();
+        txtPoints = new java.awt.Label();
         btnPayment = new java.awt.Button();
         btnCustomerCard = new java.awt.Button();
         btnQty = new java.awt.Button();
         btnVoid = new java.awt.Button();
-        label6 = new java.awt.Label();
+        lbName = new java.awt.Label();
         txtQty = new java.awt.TextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblPOS = new javax.swing.JTable();
@@ -210,17 +322,17 @@ public class POSDiaglog extends javax.swing.JDialog {
         txtCustomerCard.setForeground(new java.awt.Color(0, 0, 102));
         txtCustomerCard.setText("None");
 
-        txtCustomerCard1.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
-        txtCustomerCard1.setForeground(new java.awt.Color(0, 0, 102));
-        txtCustomerCard1.setText("0.00");
+        txtSubTotal.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+        txtSubTotal.setForeground(new java.awt.Color(0, 0, 102));
+        txtSubTotal.setText("0.00");
 
-        txtCustomerCard2.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
-        txtCustomerCard2.setForeground(new java.awt.Color(0, 0, 102));
-        txtCustomerCard2.setText("0.00");
+        txtVAT.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+        txtVAT.setForeground(new java.awt.Color(0, 0, 102));
+        txtVAT.setText("0.00");
 
-        txtCustomerCard3.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
-        txtCustomerCard3.setForeground(new java.awt.Color(0, 0, 102));
-        txtCustomerCard3.setText("0.00");
+        txtTotalAmount.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+        txtTotalAmount.setForeground(new java.awt.Color(0, 0, 102));
+        txtTotalAmount.setText("0.00");
 
         label9.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         label9.setForeground(new java.awt.Color(0, 0, 102));
@@ -229,6 +341,14 @@ public class POSDiaglog extends javax.swing.JDialog {
         txtCustomerName.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
         txtCustomerName.setForeground(new java.awt.Color(0, 0, 102));
         txtCustomerName.setText("None");
+
+        label10.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
+        label10.setForeground(new java.awt.Color(0, 0, 102));
+        label10.setText("Points :");
+
+        txtPoints.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+        txtPoints.setForeground(new java.awt.Color(0, 0, 102));
+        txtPoints.setText("0");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -244,16 +364,18 @@ public class POSDiaglog extends javax.swing.JDialog {
                                 .addComponent(label3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(label4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addComponent(label5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(label5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(label10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtCustomerCard, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
-                    .addComponent(txtCustomerName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(txtCustomerCard2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE)
-                        .addComponent(txtCustomerCard1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(txtCustomerCard3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGap(0, 19, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtPoints, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(txtCustomerCard, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
+                        .addComponent(txtCustomerName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtVAT, javax.swing.GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE)
+                        .addComponent(txtSubTotal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtTotalAmount, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -261,15 +383,15 @@ public class POSDiaglog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtCustomerCard2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtVAT, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(label3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtCustomerCard1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtSubTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(label4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtCustomerCard3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtTotalAmount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(label5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -278,12 +400,21 @@ public class POSDiaglog extends javax.swing.JDialog {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(label9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtCustomerName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(label10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtPoints, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         btnPayment.setBackground(new java.awt.Color(255, 204, 255));
         btnPayment.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
         btnPayment.setLabel("Payment [F5]");
+        btnPayment.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPaymentActionPerformed(evt);
+            }
+        });
 
         btnCustomerCard.setBackground(new java.awt.Color(255, 204, 255));
         btnCustomerCard.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
@@ -297,6 +428,11 @@ public class POSDiaglog extends javax.swing.JDialog {
         btnQty.setBackground(new java.awt.Color(255, 204, 255));
         btnQty.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
         btnQty.setLabel("Add Qty [F9]");
+        btnQty.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnQtyActionPerformed(evt);
+            }
+        });
 
         btnVoid.setBackground(new java.awt.Color(255, 204, 255));
         btnVoid.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
@@ -308,19 +444,24 @@ public class POSDiaglog extends javax.swing.JDialog {
             }
         });
 
-        label6.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
-        label6.setForeground(new java.awt.Color(0, 0, 102));
-        label6.setText("Malabiga");
+        lbName.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+        lbName.setForeground(new java.awt.Color(0, 0, 102));
+        lbName.setText("cashierName");
 
         txtQty.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
         txtQty.setText("1");
+        txtQty.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtQtyKeyPressed(evt);
+            }
+        });
 
         tblPOS.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Barcode", "Product Name", "Qty", "Price", "Amount"
+                "Barcode", "Product Name", "Qty", "Price", "Amount", "Points"
             }
         ));
         tblPOS.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -390,7 +531,7 @@ public class POSDiaglog extends javax.swing.JDialog {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(label7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(label6, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(lbName, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(btnQty, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
@@ -407,7 +548,7 @@ public class POSDiaglog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(label6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtQty, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(label7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtBarcode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -448,9 +589,17 @@ public class POSDiaglog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnVoidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoidActionPerformed
-        PasswordDialog passwordDialog = 
-                new PasswordDialog(cashierFrame, this, true);
-        passwordDialog.setVisible(true);
+        int input = JOptionPane.showConfirmDialog(null, 
+                        "Are you sure do you want void this product", 
+                        "Warning", 
+                        JOptionPane.YES_NO_OPTION, 
+                        JOptionPane.WARNING_MESSAGE);
+                        if(input == 0) {
+                            DefaultTableModel model = (DefaultTableModel) tblPOS.getModel();
+                            model.removeRow(tblPOS.getSelectedRow());
+                            clearTxtAndButton(); 
+                            transactionInfo();
+                        }
         
     }//GEN-LAST:event_btnVoidActionPerformed
 
@@ -472,6 +621,7 @@ public class POSDiaglog extends javax.swing.JDialog {
                             DefaultTableModel model = (DefaultTableModel) tblPOS.getModel();
                             model.setRowCount(0);
                             clearTxtAndButton();
+                            clearTransaction();
                             txtCustomerCard.setText("None");
                             txtCustomerName.setText("None");       
                         }
@@ -480,6 +630,7 @@ public class POSDiaglog extends javax.swing.JDialog {
     private void txtBarcodeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBarcodeKeyPressed
         if(evt.getKeyCode() == KeyEvent.VK_ENTER){
             updatePOSTable(txtBarcode.getText().trim());
+            transactionInfo();
         }
     }//GEN-LAST:event_txtBarcodeKeyPressed
 
@@ -488,6 +639,25 @@ public class POSDiaglog extends javax.swing.JDialog {
                 new CustomerCardDialog(cashierFrame, this, true);
         customerCardDialog.setVisible(true);
     }//GEN-LAST:event_btnCustomerCardActionPerformed
+
+    private void btnQtyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQtyActionPerformed
+        AddQuantityPOSDialog addQuantityPOSDialog = new
+            AddQuantityPOSDialog(cashierFrame, this, true, getPOSData());
+        addQuantityPOSDialog.setVisible(true);
+    }//GEN-LAST:event_btnQtyActionPerformed
+
+    private void btnPaymentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPaymentActionPerformed
+        PaymentDialog paymentDialog = 
+                new PaymentDialog(cashierFrame, this, true, txtTotalAmount.getText());
+        paymentDialog.setUsername(getCashierUsername());
+        paymentDialog.setRfidNumber(txtCustomerCard.getText());
+        paymentDialog.setPoints(txtPoints.getText());
+        paymentDialog.setVisible(true);
+    }//GEN-LAST:event_btnPaymentActionPerformed
+
+    private void txtQtyKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtQtyKeyPressed
+  numberOnly(evt.getKeyChar(), txtQty);      
+    }//GEN-LAST:event_txtQtyKeyPressed
 
     /**
      * @param args the command line arguments
@@ -543,21 +713,23 @@ public class POSDiaglog extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private java.awt.Label label1;
+    private java.awt.Label label10;
     private java.awt.Label label2;
     private java.awt.Label label3;
     private java.awt.Label label4;
     private java.awt.Label label5;
-    private java.awt.Label label6;
     private java.awt.Label label7;
     private java.awt.Label label8;
     private java.awt.Label label9;
-    private javax.swing.JTable tblPOS;
+    public java.awt.Label lbName;
+    public javax.swing.JTable tblPOS;
     private java.awt.TextField txtBarcode;
     public java.awt.Label txtCustomerCard;
-    private java.awt.Label txtCustomerCard1;
-    private java.awt.Label txtCustomerCard2;
-    private java.awt.Label txtCustomerCard3;
     public java.awt.Label txtCustomerName;
+    public java.awt.Label txtPoints;
     private java.awt.TextField txtQty;
+    private java.awt.Label txtSubTotal;
+    private java.awt.Label txtTotalAmount;
+    private java.awt.Label txtVAT;
     // End of variables declaration//GEN-END:variables
 }

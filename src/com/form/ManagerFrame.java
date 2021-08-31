@@ -38,6 +38,7 @@ public final class ManagerFrame extends javax.swing.JFrame {
         showHomeInternalFrame();
         this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
        
+        btnHistory.setVisible(false);
     }
     
     private void showInternalFrame(JInternalFrame internalFrame) {
@@ -50,6 +51,11 @@ public final class ManagerFrame extends javax.swing.JFrame {
        
         }
         internalFrame.setVisible(true);
+    }
+    
+     public void showRewardInternalFrame(){
+        RewardInternalFrame rewardInternalFrame = RewardInternalFrame.getInstance(this);
+        showInternalFrame(rewardInternalFrame);
     }
     
     public void showProductInternalFrame(){
@@ -174,7 +180,7 @@ public final class ManagerFrame extends javax.swing.JFrame {
                 btnUsersActionPerformed(evt);
             }
         });
-        jPanel1.add(btnUsers, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 590, 200, 50));
+        jPanel1.add(btnUsers, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 490, 200, 50));
 
         btnHome.setBackground(new java.awt.Color(0, 102, 102));
         btnHome.setForeground(new java.awt.Color(51, 51, 51));
@@ -241,7 +247,7 @@ public final class ManagerFrame extends javax.swing.JFrame {
                 btnHistoryActionPerformed(evt);
             }
         });
-        jPanel1.add(btnHistory, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 500, 200, 50));
+        jPanel1.add(btnHistory, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 640, 200, 50));
 
         lbUserType.setFont(new java.awt.Font("Verdana", 1, 24)); // NOI18N
         lbUserType.setForeground(new java.awt.Color(255, 255, 255));
@@ -409,11 +415,12 @@ public final class ManagerFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnProductActionPerformed
 
     private void btnReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportActionPerformed
-        // TODO add your handling code here:
+      ReportFrame reportFrame = new ReportFrame();
+      reportFrame.setVisible(true);
     }//GEN-LAST:event_btnReportActionPerformed
 
     private void btnRewardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRewardActionPerformed
-        // TODO add your handling code here:
+        showRewardInternalFrame();
     }//GEN-LAST:event_btnRewardActionPerformed
 
     private void btnHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHistoryActionPerformed

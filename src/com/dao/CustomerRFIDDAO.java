@@ -148,7 +148,7 @@ public class CustomerRFIDDAO {
             if(rows == 1){
                 success = true;
             }else{
-                throw new SQLException("Delete in Product failed, no rows affected.");
+               // throw new SQLException("Delete in Product failed, no rows affected.");
             }
             
             conn.close();        

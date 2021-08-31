@@ -51,6 +51,36 @@ public class CustomerDAO {
         return getUsersInfo;
     }
     
+    public List<Object> getCustomerCardPointsInfo(String card){
+        List<Object> getUsersInfo =  new ArrayList<>();
+        
+         conn = new DatabaseConnection().getConnection();
+         sql = "SELECT c.first_name, c.middle_name, c.last_name, cp.points "
+                 + "FROM customer AS c "
+                 + "INNER JOIN customer_rfid AS cr "
+                 + "ON c.id = cr.id "
+                 + "INNER JOIN customer_points AS cp "
+                 + "ON c.id = cp.id "
+                 + "WHERE cr.rfid_number = ?";
+         
+         try {
+             pst = conn.prepareStatement(sql);
+             pst.setString(1, card);      
+             rs = pst.executeQuery();
+            
+            while(rs.next()){
+                getUsersInfo.add(rs.getString("first_name"));
+                getUsersInfo.add(rs.getString("middle_name"));
+                getUsersInfo.add(rs.getString("last_name"));
+                getUsersInfo.add(rs.getString("points"));
+                
+            }    
+        } catch (Exception e) {
+              JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+        return getUsersInfo;
+    }
+    
     public List<Object> getCustomerCardInfo(String card){
         List<Object> getUsersInfo =  new ArrayList<>();
         
@@ -69,7 +99,7 @@ public class CustomerDAO {
             while(rs.next()){
                 getUsersInfo.add(rs.getString("last_name"));
                 getUsersInfo.add(rs.getString("rfid_number"));
-         
+                
             }    
         } catch (Exception e) {
               JOptionPane.showMessageDialog(null, e.getMessage());
@@ -165,7 +195,7 @@ public class CustomerDAO {
             if(rows == 1){
                 success = true;
             }else{
-                throw new SQLException("Delete in Product failed, no rows affected.");
+               // throw new SQLException("Delete in Product failed, no rows affected.");
             }
             
             conn.close();        

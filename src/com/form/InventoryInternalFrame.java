@@ -251,7 +251,6 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
         btnEditProduct = new javax.swing.JButton();
         btnDeleteProduct = new javax.swing.JButton();
         btnClearProduct = new javax.swing.JButton();
-        btnInfoProduct = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         cmbSearch1 = new javax.swing.JComboBox<>();
         txtSearch1 = new javax.swing.JTextField();
@@ -266,7 +265,6 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
         btnEditStock = new javax.swing.JButton();
         btnDeleteStock = new javax.swing.JButton();
         btnClearStock = new javax.swing.JButton();
-        btnInfoStock = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblStocks = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
@@ -370,19 +368,6 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
             }
         });
         jToolBar2.add(btnClearProduct);
-
-        btnInfoProduct.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/info.png"))); // NOI18N
-        btnInfoProduct.setText("Info");
-        btnInfoProduct.setEnabled(false);
-        btnInfoProduct.setFocusable(false);
-        btnInfoProduct.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnInfoProduct.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnInfoProduct.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnInfoProductActionPerformed(evt);
-            }
-        });
-        jToolBar2.add(btnInfoProduct);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -559,19 +544,6 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
             }
         });
         jToolBar3.add(btnClearStock);
-
-        btnInfoStock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/info.png"))); // NOI18N
-        btnInfoStock.setText("Info");
-        btnInfoStock.setEnabled(false);
-        btnInfoStock.setFocusable(false);
-        btnInfoStock.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnInfoStock.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnInfoStock.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnInfoStockActionPerformed(evt);
-            }
-        });
-        jToolBar3.add(btnInfoStock);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -750,10 +722,6 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
         clearForProduct();
     }//GEN-LAST:event_btnClearProductActionPerformed
 
-    private void btnInfoProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInfoProductActionPerformed
-
-    }//GEN-LAST:event_btnInfoProductActionPerformed
-
     private void btnNewStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewStockActionPerformed
         AddEditProductStockDialog addEditProductStockDialog = new 
         AddEditProductStockDialog(managerFrame, this, true, "Add");
@@ -789,10 +757,6 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
     private void btnClearStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearStockActionPerformed
         clearForStock();
     }//GEN-LAST:event_btnClearStockActionPerformed
-
-    private void btnInfoStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInfoStockActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnInfoStockActionPerformed
 
     private void tblStocksMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblStocksMouseReleased
         setButtonForStock();
@@ -843,8 +807,6 @@ public class InventoryInternalFrame extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnDeleteStock;
     private javax.swing.JButton btnEditProduct;
     private javax.swing.JButton btnEditStock;
-    private javax.swing.JButton btnInfoProduct;
-    private javax.swing.JButton btnInfoStock;
     private javax.swing.JButton btnNewProduct;
     private javax.swing.JButton btnNewStock;
     private javax.swing.JComboBox<String> cmbSearch;

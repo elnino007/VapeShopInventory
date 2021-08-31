@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -50,7 +51,7 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
         this.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         BasicInternalFrameUI bui = (BasicInternalFrameUI) this.getUI();
         bui.setNorthPane(null);
-
+     
     }
     
    
@@ -135,7 +136,6 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
        btnNew.setEnabled(true);
        btnEdit.setEnabled(false);
        btnDelete.setEnabled(false);
-       btnInfo.setEnabled(false);
        tblUsers.clearSelection();
     }
     
@@ -147,12 +147,10 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
                btnNew.setEnabled(true);
                btnEdit.setEnabled(false);
                btnDelete.setEnabled(false);
-               btnInfo.setEnabled(false);
             }else{
                 btnNew.setEnabled(false);
                 btnEdit.setEnabled(true);
                 btnDelete.setEnabled(true);
-                btnInfo.setEnabled(true);
             }
         
         } catch (NumberFormatException e) {
@@ -175,7 +173,6 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
         btnEdit = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
         btnDelete1 = new javax.swing.JButton();
-        btnInfo = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         cmbSearch = new javax.swing.JComboBox<>();
         txtSearch = new javax.swing.JTextField();
@@ -267,19 +264,6 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
             }
         });
         jToolBar2.add(btnDelete1);
-
-        btnInfo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/info.png"))); // NOI18N
-        btnInfo.setText("Info");
-        btnInfo.setEnabled(false);
-        btnInfo.setFocusable(false);
-        btnInfo.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        btnInfo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnInfo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnInfoActionPerformed(evt);
-            }
-        });
-        jToolBar2.add(btnInfo);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -503,7 +487,7 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
                 JOptionPane.ERROR_MESSAGE);
                 
             } else {
-               if(userType.equals("Owner")){
+               if(userType.equals("Owner") || userType.equals("Manager")){
                    if(getSelectedUserType().equals("Owner")){
                         addEditUserDiaglog.cmbUserType.removeAllItems();
                         addEditUserDiaglog.cmbUserType.addItem("Owner");
@@ -567,10 +551,6 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
         
     }//GEN-LAST:event_formInternalFrameOpened
 
-    private void btnInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInfoActionPerformed
-       
-    }//GEN-LAST:event_btnInfoActionPerformed
-
     private void txtSearchPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_txtSearchPropertyChange
        
     }//GEN-LAST:event_txtSearchPropertyChange
@@ -594,7 +574,6 @@ public class UsersInternalFrame extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnDelete1;
     private javax.swing.JButton btnEdit;
-    private javax.swing.JButton btnInfo;
     private javax.swing.JButton btnNew;
     private javax.swing.JComboBox<String> cmbSearch;
     private javax.swing.JButton jButton1;

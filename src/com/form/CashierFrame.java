@@ -7,6 +7,7 @@ package com.form;
 
 import java.awt.Toolkit;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -14,9 +15,25 @@ import javax.swing.JFrame;
  */
 public class CashierFrame extends javax.swing.JFrame {
 
-    /**
-     * Creates new form CashierForm
-     */
+    public String username;
+    public String cashierName;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getCashierName() {
+        return cashierName;
+    }
+
+    public void setCashierName(String cashierName) {
+        this.cashierName = cashierName;
+    }
+    
     public CashierFrame() {
         initComponents();
         
@@ -61,6 +78,11 @@ public class CashierFrame extends javax.swing.JFrame {
         btnPOS.setBackground(new java.awt.Color(0, 102, 102));
         btnPOS.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/point.png"))); // NOI18N
         btnPOS.setText("Check Points");
+        btnPOS.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPOSActionPerformed(evt);
+            }
+        });
 
         btnCustomer.setBackground(new java.awt.Color(0, 102, 102));
         btnCustomer.setForeground(new java.awt.Color(51, 51, 51));
@@ -83,13 +105,13 @@ public class CashierFrame extends javax.swing.JFrame {
         lbLastname.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
         lbLastname.setForeground(new java.awt.Color(0, 51, 51));
         lbLastname.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbLastname.setText("Name: Malabiga");
+        lbLastname.setText("Name: CashierName");
         lbLastname.setName(""); // NOI18N
 
         btnReward.setBackground(new java.awt.Color(0, 102, 102));
         btnReward.setForeground(new java.awt.Color(51, 51, 51));
         btnReward.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/reward.png"))); // NOI18N
-        btnReward.setText("Reward");
+        btnReward.setText("Redeem");
         btnReward.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRewardActionPerformed(evt);
@@ -224,7 +246,9 @@ public class CashierFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCustomerActionPerformed
 
     private void btnRewardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRewardActionPerformed
-        // TODO add your handling code here:
+        RewardCashierDialog rewardCashierDialog = 
+                new RewardCashierDialog(this, true);
+        rewardCashierDialog.setVisible(true);
     }//GEN-LAST:event_btnRewardActionPerformed
 
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
@@ -236,8 +260,17 @@ public class CashierFrame extends javax.swing.JFrame {
 
     private void btnPOS1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPOS1ActionPerformed
         POSDiaglog posDiaglog = new POSDiaglog(this, true);
+        posDiaglog.setCashierName(getCashierName());
+        posDiaglog.setCashierUsername(getUsername());
+        posDiaglog.lbName.setText(getCashierName());
         posDiaglog.setVisible(true);
     }//GEN-LAST:event_btnPOS1ActionPerformed
+
+    private void btnPOSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPOSActionPerformed
+        CheckCustomerPoints checkCustomerPoints = 
+                new CheckCustomerPoints(this, true);
+        checkCustomerPoints.setVisible(true);
+    }//GEN-LAST:event_btnPOSActionPerformed
 
     /**
      * @param args the command line arguments

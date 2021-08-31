@@ -6,6 +6,7 @@
 package com.form;
 
 import com.dao.CustomerDAO;
+import com.dao.CustomerPointsDAO;
 import com.dao.CustomerRFIDDAO;
 import java.awt.Color;
 import java.awt.Container;
@@ -28,6 +29,7 @@ public class AddEditCustomerDialog extends javax.swing.JDialog {
     private CustomerJDialog customerJDialog;
     final private CustomerDAO customerDAO = new CustomerDAO();
     final private CustomerRFIDDAO customerRFIDDAO = new CustomerRFIDDAO();
+    final private CustomerPointsDAO customerPointsDAO = new CustomerPointsDAO();
     private String type;
     private int id;
     
@@ -139,10 +141,12 @@ public class AddEditCustomerDialog extends javax.swing.JDialog {
     public void addCustomers(){
         boolean success = customerDAO.create(getTextField());
         customerRFIDDAO.create(getTextField());
+        customerPointsDAO.create(getTextField());
         if(success){
             JOptionPane.showMessageDialog(null, "Successfully created.");
             customerJDialog.updateTableCustomer();
             customerJDialog.updateTableRFID();
+            customerJDialog.updateTablePoints();
         }
         
         dispose();

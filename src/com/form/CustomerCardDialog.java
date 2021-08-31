@@ -38,8 +38,8 @@ public class CustomerCardDialog extends javax.swing.JDialog {
         List<Object> getCustomerCardInfo = 
                 customerDAO.getCustomerCardInfo(txtCustomerCard.getText());
         
-        posDiaglog.txtCustomerCard.setText(getCustomerCardInfo.get(0).toString());
-        posDiaglog.txtCustomerName.setText(getCustomerCardInfo.get(1).toString());
+        posDiaglog.txtCustomerName.setText(getCustomerCardInfo.get(0).toString());
+        posDiaglog.txtCustomerCard.setText(getCustomerCardInfo.get(1).toString());
     }
     
     public void showMessageError(String errorString){
@@ -72,7 +72,6 @@ public class CustomerCardDialog extends javax.swing.JDialog {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         txtCustomerCard = new javax.swing.JTextField();
 
@@ -83,13 +82,6 @@ public class CustomerCardDialog extends javax.swing.JDialog {
 
         jLabel1.setFont(new java.awt.Font("Verdana", 1, 12)); // NOI18N
         jLabel1.setText("Customer Card :");
-
-        jButton1.setText("Okay");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
 
         jButton2.setText("Cancel");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -111,10 +103,7 @@ public class CustomerCardDialog extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton2))
+                    .addComponent(jButton2)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -129,9 +118,7 @@ public class CustomerCardDialog extends javax.swing.JDialog {
                     .addComponent(jLabel1)
                     .addComponent(txtCustomerCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                .addComponent(jButton2)
                 .addContainerGap())
         );
 
@@ -150,14 +137,6 @@ public class CustomerCardDialog extends javax.swing.JDialog {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if(isRFIDExist()) {
-            getCustomerCardInfo();
-            dispose();
-        }
-        
-    }//GEN-LAST:event_jButton1ActionPerformed
-
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         posDiaglog.txtCustomerCard.setText("None");
         posDiaglog.txtCustomerName.setText("None");
@@ -170,6 +149,8 @@ public class CustomerCardDialog extends javax.swing.JDialog {
                         getCustomerCardInfo();
                         dispose();
                     }
+                    
+                    
                 }
     }//GEN-LAST:event_txtCustomerCardKeyPressed
 
@@ -216,7 +197,6 @@ public class CustomerCardDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
